@@ -93,7 +93,7 @@ typedef enum states {
     DOOR_OPEN =3,
     STOP = 4,
     UNDEF =5
-} current_state;
+} current_state_t;
 
 /**
   Gets a button signal.

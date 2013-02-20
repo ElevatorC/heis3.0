@@ -32,6 +32,8 @@ int main()
 
     while (1) {
 
+        //get button signal
+
         // STATEMACHINE
         // Trenger en metode for å sjekke knapp input og legge det i kø array
         switch(current_state_t)
@@ -84,7 +86,7 @@ int main()
                 //break;//crash it!
             
             default:
-                current_state=UNDEF;
+                //current_state=UNDEF;
         }
 
 
