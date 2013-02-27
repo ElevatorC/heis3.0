@@ -46,18 +46,22 @@ int main()
         {
             
             case IDLE:
-            
-               
+            //ikke obst.
+
+            //bestilling
+              
             
             case UP:
                 // Finish up que itterativt so after floor 1 it only cares about 2-4 etc..
                 // IF order on floor above current flore(function that read) and elevator in motion upwards
                 // when finished go to down after que_down check else go to idle
+                sm_up();
             
             case DOWN:
                 // Finish up que decitterativt so after floor 4 it only cares about 3-1 etc..
                 // IF order on floor above current flore(function that read) and elevator in motion upwards
                 // when finished go to up after que_down check else go to idle
+                sm_down();
             
             case DOOR_OPEN:
                 elev_set_speed(0);
@@ -75,10 +79,6 @@ int main()
             
             case STOP:
                 elev_set_speed(0);
-                
-                queue_up    = {0,0,0,0};
-                queue_down  = {0,0,0,0};
-
                 //kanskje gøre denne mer modulær type
                 sm_stop(*queue_up,*queue_down);
             
@@ -88,7 +88,11 @@ int main()
             if (elev_get_floor_sensor_signal() < 0)
             {
                 elev_set_speed(-100);
+                return UNDEF;
             }
+            else if(elev_get_floor_sensor() > 0){
+                return IDLE;            
+            }   
                 //break;//crash it!
             
             default:
