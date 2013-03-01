@@ -1,91 +1,90 @@
 #include "elev.h"
+#include "ui.h"
+#include "queue.h"
 
-int sm_up(){
+
+current_state_t sm_up(int queues[N_QUEUES][N_FLOORS]){
     if(elev_get_stop_signal()) {
-        return STOP;    
+        return STATE_STOP;    
     }
-    else if(queue_is_empty(queues.queue_up)){
-        return IDLE;    
+	else if(queue_is_empty(queues[QUEUE_UP])){
+        return STATE_IDLE;    
     }
     for(int floor=0;floor<N_FLOORS;floor++){
         //denne logikken fungerer kanskje ikke..
-        if(elev_check_floor_sensor() == (queues.queue_up[floor] || queues.queue_command[floor])){
+		if(elev_get_floor_sensor_signal() == (queues[QUEUE_UP][floor] || queues[QUEUE_COMMAND][floor])){
         //Open door
-            return OPEN_DOOR;
+            return STATE_DOOR_OPEN;
         }
-    } else {
-    elev_set_speed(300);
-        return UP;    
     }
+	//Dette gikk ikke!
+	/*
+	else {
+    elev_set_speed(300);
+        return STATE_UP;    
+    }
+	*/
 
 }
 
-int sm_down(){
+current_state_t sm_down(int queues[N_QUEUES][N_FLOORS]){
     if(elev_get_stop_signal()) {
-        return STOP;    
+        return STATE_STOP;    
     }
-    else if(queue_is_empty(queues.queue_down)){
-        return IDLE;    
+	else if(queue_is_empty(queues[QUEUE_DOWN])){
+        return STATE_IDLE;    
     }
     for(int floor=3;floor>=0;floor--){
-        if(elev_check_floor_sensor() == (queues.queue_down[floor] || queues.queue_command[floor])){
+		if(elev_get_floor_sensor_signal() == (queues[QUEUE_DOWN][floor] || queues[QUEUE_COMMAND][floor])){
         //Open door
-            return OPEN_DOOR;
+            return STATE_DOOR_OPEN;
         }
-    } else {
+    } 
+	
+	/*else {
     elev_set_speed(-300);
-        return DOWN;    
+        return STATE_DOWN;    
     }
+	*/
 }
-int sm_idle() {
-    elev_set_speed(0)
-    if(elev_get_floor_sensor() < 0){
-        return UNDEF;     
+
+int sm_idle(int queues[N_QUEUES][N_FLOORS]) {
+    elev_set_speed(0);
+	if(elev_get_floor_sensor_signal() < 0){
+        return STATE_UNDEF;     
     }    
        //ser etter elementer i respektiv kø 
-    if(queues_check()==0){
+    if(queue_check_queues(queues)==0){
     
         for(int floor=0;floor<N_FLOORS;floor++){
-            if(queues.queue_command[floor]==1){
+			if(queues[QUEUE_COMMAND][floor] == 1){
 
                 //spesialtilfelle må enders i state!       
-                if(elev_get_floor_sensor()==floor || elev_get_floor_sensor()<floor){
+                if(elev_get_floor_sensor_signal() == floor || elev_get_floor_sensor_signal()<floor){
                 //Dette er bare for å åpne dør, via upstate
-                    return UP;
+                    return STATE_UP;
                 }
                 else {
-                    return DOWN;
+                    return STATE_DOWN;
                 }
             }                
         }
     }
-//Fryktelig forenklet utgave
+	//Fryktelig forenklet utgave
     //1=oppkø
-    else if(queues_check == 1){
-        return UP;
+    else if(queue_check_queues(queues) == 1){
+        return STATE_UP;
     }
+
     //2=nedkø
-    else if(quees_checks == 2) {
-        return DOWN;    
+    else if(queue_check_queues(queues) == 2) {
+        return STATE_DOWN;    
     }
 }
 
-
-
-
-
-
-    } else if(queues_check()==1){
-        return UP;
-    } else if(queues_check()==0 {
-        return DOWN;
-    } else {
-        return IDLE;
-    }
-}
-int sm_stop() {
+current_state_t sm_stop(int queues[N_QUEUES][N_FLOORS) {
     elev_set_speed(0);    
-    queue_clear();
+    queue_clear(**queues);
     //evt ta høyde for obstruction
-    return IDLE;
+    return STATE_IDLE;
 }

@@ -38,7 +38,7 @@
 #define LIGHT2_UP      (0x300+8)
 
 //out port 2
-#define PORT2 3
+#define PORT2			3
 #define LIGHT2_DOWN    (0x300+7)
 #define LIGHT3_UP      (0x300+6)
 #define LIGHT3_DOWN    (0x300+5)

@@ -3,8 +3,6 @@
 //
 // 2007, Martin Korsgaard
 
-//
-// YOU DO NOT NEED TO EDIT THIS FILE
 //Edited by Sigvart M. Hovland and Olav Kallerud
 
 

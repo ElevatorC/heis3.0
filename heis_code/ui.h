@@ -1,11 +1,11 @@
-#ifndef H_UI
-#define H_UI
+#ifndef UI_H
+#define UI_H
 
 typedef enum tag_ui_lamp_type { 
     BUTTON_CALL_UP = 0, 
     BUTTON_CALL_DOWN = 1, 
     BUTTON_COMMAND = 2 
-} elev_button_type_t;
+} ui_button_type_t;
 
 /**
   Gets a button signal.
@@ -14,7 +14,7 @@ typedef enum tag_ui_lamp_type {
   @param floor Which floor to check button. Must be 0-3.
   @return 0 if button is not pushed. 1 if button is pushed.
 */
-int ui_get_button_signal(ui_button_type_t button, int floor);
+int ui_get_button_signal(int button, int floor);
 
 /** 
 Checks what buttons are being pushed and add ordered floor to

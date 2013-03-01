@@ -62,21 +62,21 @@ int elev_get_floor_indicator();
   Button types for function elev_set_button_lamp() and elev_get_button().
 */
 typedef enum tag_elev_lamp_type { 
-    BUTTON_CALL_UP = 0, 
+    BUTTON_CALL_UP	 = 0, 
     BUTTON_CALL_DOWN = 1, 
-    BUTTON_COMMAND = 2 
+    BUTTON_COMMAND	 = 2 
 } elev_button_type_t;
 
 /**
   State types for statemachine
 */
-typedef enum states { 
-    IDLE = 0, 
-    UP = 1, 
-    DOWN = 2,
-    DOOR_OPEN =3,
-    STOP = 4,
-    UNDEF =5
+typedef enum state { 
+    STATE_IDLE		= 0, 
+    STATE_UP		= 1, 
+    STATE_DOWN		= 2,
+    STATE_DOOR_OPEN = 3,
+    STATE_STOP		= 4,
+    STATE_UNDEF		= 5
 } current_state_t;
 
 /**

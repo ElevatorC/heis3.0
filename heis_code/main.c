@@ -2,11 +2,13 @@
 // READ ELEV.H FOR INFORMATION ON HOW TO USE THE ELEVATOR FUNCTIONS.
 
 #include "elev.h"
-#include "sm_macros.h"
+#include "ui.h"
+#include "sm_macro.h"
 #include <stdio.h>
 
-// legges i elev.h
 
+// legges i elev.h
+static int queues[N_QUEUES][N_FLOORS] = {{0}};
 
 int main()
 { 
@@ -42,70 +44,76 @@ int main()
 
         // STATEMACHINE
         // Trenger en metode for å sjekke knapp input og legge det i kø array
-        switch(current_state_t)
+        switch(current_state_t state)
         {
             
-            case IDLE:
+            case STATE_IDLE:
+				state = sm_idle(queues);
+				break;
             //ikke obst.
 
             //bestilling
               
             
-            case UP:
+            case STATE_UP:
                 // Finish up que itterativt so after floor 1 it only cares about 2-4 etc..
                 // IF order on floor above current flore(function that read) and elevator in motion upwards
                 // when finished go to down after que_down check else go to idle
-                sm_up();
+				state = sm_up(queues);
+				break;
             
-            case DOWN:
+            case STATE_DOWN:
                 // Finish up que decitterativt so after floor 4 it only cares about 3-1 etc..
                 // IF order on floor above current flore(function that read) and elevator in motion upwards
                 // when finished go to up after que_down check else go to idle
-                sm_down();
+				state = sm_down(queues);
             
-            case DOOR_OPEN:
+            case STATE_DOOR_OPEN:
                 elev_set_speed(0);
                 while(elev_get_obstruction_signal() != 0){
-                        current_state = DOOR_OPEN;    
+                        state = STATE_DOOR_OPEN;    
                 }
+				state = STATE_IDLE;
+				break;
                 //egen macro?
                 //sm_obstruction();    
                 
                 //light door pannel
                 
-                usleep(3000)
+                //usleep(3000);
                 //queue_delete que element 
                 //slett element i listen          
             
-            case STOP:
+            case STATE_STOP:
                 elev_set_speed(0);
                 //kanskje gøre denne mer modulær type
-                sm_stop(*queue_up,*queue_down);
+				state = sm_stop(queues);
+				break;
             
             //case EMERGENCY:
 
-            case UNDEF:
-            if (elev_get_floor_sensor_signal() < 0)
-            {
-                elev_set_speed(-100);
-                return UNDEF;
-            }
-            else if(elev_get_floor_sensor() > 0){
-                return IDLE;            
-            }   
-                //break;//crash it!
+            case STATE_UNDEF:
+				if (elev_get_floor_sensor_signal() < 0)
+				{
+					elev_set_speed(-100);
+					return STATE_UNDEF;
+				}
             
-            default:
-                //current_state=UNDEF;
-        }
+				else if(elev_get_floor_sensor_signal() > 0){
+					return STATE_IDLE;            
+				}
+				break;
+                //break;//crash it!
+		}
 
 
         // Check if stop button and obstruction is active, if so, stop elevator and exit program.
-        if (elev_get_obstruction_signal() && elev_get_stop_signal()) {
+		if (elev_get_obstruction_signal() && elev_get_stop_signal()) {
             elev_set_speed(0);
             break;
         }
-    }
+
+    }//End While
 
     return 0;
 

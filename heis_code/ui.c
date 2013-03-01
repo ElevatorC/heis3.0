@@ -6,6 +6,8 @@
 #include "io.h"
 #include "channels.h"
 
+#include <assert.h>
+
 // Number of signals and lamps on a per-floor basis (excl sensor)
 #define N_BUTTONS 3
 
@@ -23,8 +25,12 @@ static const int button_channel_matrix[N_FLOORS][N_BUTTONS] =
 
 //add to queue.c? to decrease dependancy
 void ui_check_buttons(void){
+	int button = 0;
+	int floor = 0;
+
     static bool button_pushed[N_BUTTONS][N_FLOORS] = {{0}};
-    for(for int button=0; button<N_BUTTONS; button++){
+    
+	for(button=0; button<N_BUTTONS; button++){
         for(floor=0; floor<N_FLOORS; floor++){
             // Skip non-existing buttons
             if((floor == 0 && button == BUTTON_CALL_DOWN) 
@@ -32,12 +38,12 @@ void ui_check_buttons(void){
                 continue;
             else if(ui_get_button_signal(button, floor))
             {
-                button_pushed[button][floor] = TRUE;
+                button_pushed[button][floor] = 1; //TRUE;
             }
             // If button is now released, register order
-            else if(button_pushed[button][floor] == TRUE)
+            else if(button_pushed[button][floor] == 1 /*TRUE*/)
             {
-                button_pushed[button][floor] = FALSE;
+                button_pushed[button][floor] = 0; //FALSE;
                 //add_to_queues(button,floor,1)
                 ui_set_button_lamp(button, floor, 1);
             }
@@ -48,7 +54,7 @@ void ui_check_buttons(void){
 
 //maybe let the queue arrays in queues handle button lamps?
 //to decrease dependancy
-void ui_set_button_lamp(ui_button_type_t button, int floor, int value)
+void ui_set_button_lamp(int button, int floor, int value)
 {
 	// assert crashes the program deliberately if it's condition does not hold,
 	// and prints an informative error message. Useful for debugging.
@@ -65,7 +71,7 @@ void ui_set_button_lamp(ui_button_type_t button, int floor, int value)
         io_clear_bit(lamp_channel_matrix[floor][button]);        
 }
 
-int ui_get_button_signal(ui_button_type_t button, int floor)
+int ui_get_button_signal(int button, int floor)
 {
 	// assert crashes the program deliberately if it's condition does not hold,
 	// and prints an informative error message. Useful for debugging.
@@ -82,7 +88,8 @@ int ui_get_button_signal(ui_button_type_t button, int floor)
         return 0;
 }
 
-
+// bruke queues til å fjerne og sette ordre lys?
+/*
 void ui_remove_order_light(int floor,int direction)
 {
 	if(direction) {
@@ -136,6 +143,7 @@ void ui_remove_order_light(int floor,int direction)
 		}
 	}
 }
+*/
 
 void ui_set_door_open_lamp(bool value)
 {
