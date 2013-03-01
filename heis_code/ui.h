@@ -1,12 +1,12 @@
 #ifndef UI_H
 #define UI_H
-
+/*
 typedef enum tag_ui_lamp_type { 
     BUTTON_CALL_UP = 0, 
     BUTTON_CALL_DOWN = 1, 
     BUTTON_COMMAND = 2 
 } ui_button_type_t;
-
+/*
 /**
   Gets a button signal.
   @param button Which button type to check. Can be BUTTON_CALL_UP,
