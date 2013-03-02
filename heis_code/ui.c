@@ -26,7 +26,7 @@ static const int button_channel_matrix[N_FLOORS][N_BUTTONS] =
 void ui_check_buttons(void){
 	int button;
 	int floor;
-    static bool button_pushed[N_BUTTONS][N_FLOORS] = {{0}};
+    static int button_pushed[N_BUTTONS][N_FLOORS] = {{0}};
     
 	for(button  = 0; button<N_BUTTONS; button++){
         for(floor = 0; floor<N_FLOORS; floor++){
@@ -200,9 +200,9 @@ int ui_get_floor_indicator()
 
 int ui_init(void)
 {
-
+	int i;
 	// Zero all floor button lamps
-    for (int i = 0; i < N_FLOORS; ++i) {
+    for (i = 0; i < N_FLOORS; ++i) {
         if (i != 0)
             ui_set_button_lamp(BUTTON_CALL_DOWN, i, 0);
 

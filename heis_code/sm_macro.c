@@ -1,16 +1,18 @@
+
 #include "elev.h"
 #include "ui.h"
 #include "queue.h"
 
 
 current_state_t sm_up(int queues[N_QUEUES][N_FLOORS]){
-    if(elev_get_stop_signal()) {
+    int floor;
+	if(elev_get_stop_signal()) {
         return STATE_STOP;    
     }
-	else if(queue_is_empty(queues[QUEUE_UP])){
+	else if(queue_is_empty(queues,QUEUE_UP)){
         return STATE_IDLE;    
     }
-    for(int floor=0;floor<N_FLOORS;floor++){
+    for(floor=0;floor<N_FLOORS;floor++){
         //denne logikken fungerer kanskje ikke..
 		if(elev_get_floor_sensor_signal() == (queues[QUEUE_UP][floor] || queues[QUEUE_COMMAND][floor])){
         //Open door
@@ -28,13 +30,14 @@ current_state_t sm_up(int queues[N_QUEUES][N_FLOORS]){
 }
 
 current_state_t sm_down(int queues[N_QUEUES][N_FLOORS]){
+	int floor;
     if(elev_get_stop_signal()) {
         return STATE_STOP;    
     }
-	else if(queue_is_empty(queues[QUEUE_DOWN])){
+	else if(queue_is_empty(queues,QUEUE_DOWN)){
         return STATE_IDLE;    
     }
-    for(int floor=3;floor>=0;floor--){
+    for(floor=3;floor>=0;floor--){
 		if(elev_get_floor_sensor_signal() == (queues[QUEUE_DOWN][floor] || queues[QUEUE_COMMAND][floor])){
         //Open door
             return STATE_DOOR_OPEN;

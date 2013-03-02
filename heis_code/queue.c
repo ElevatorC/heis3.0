@@ -14,11 +14,14 @@
 static int queues[N_QUEUES][N_FLOORS] = {{0}};
 
 
-bool queue_floor_has_orders(queue_t queueType, int floor)
+int queue_floor_has_orders(int queues[N_QUEUES][N_FLOORS], queue_t queueType, int floor)
 {
     //assert(floor != -1);
     return queues[queueType][floor];
 
+}
+int queue_is_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType){
+	return 1;
 }
 
 /* return TRUE if order table contains orders */

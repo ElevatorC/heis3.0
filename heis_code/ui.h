@@ -42,6 +42,8 @@ void ui_set_stop_lamp(int value);
 */
 void ui_set_floor_indicator(int floor);
 
+void ui_set_button_lamp(int button, int floor, int value);
+
 /**
   Initialize user interface.
   @return 1 on success, 0 on failure.

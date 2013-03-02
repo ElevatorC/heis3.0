@@ -12,11 +12,13 @@ typedef enum queue_tag
 	,QUEUE_COMMAND = 2 //BUTTON_COMMAND
 } queue_t;
 
+/* Not needed
 struct queue {
-   bool queue_up[4];
-   bool queue_down[4];
-   bool queue_command[4]; 
+   int queue_up[4];
+   int queue_down[4];
+   int queue_command[4]; 
 };
+*/
 
 //Add floor to selected queue
 void queue_add(int queues[N_QUEUES][N_FLOORS],int queueType, int floor);
@@ -25,15 +27,15 @@ void queue_add(int queues[N_QUEUES][N_FLOORS],int queueType, int floor);
 void queue_remove(int queues[N_QUEUES][N_FLOORS],int queueType, int floor);
 
 //Checks if queue array is empty
-bool queue_is_empty(int queues[N_QUEUES][N_FLOORS]);
+int queue_is_empty(int queues[N_QUEUES][N_FLOORS],int queueType);
 
-bool queue_check_queues(int queues[N_QUEUES][N_FLOORS]);
+int queue_check_queues(int queues[N_QUEUES][N_FLOORS]);
 
 void queue_clear(int queues[N_QUEUES][N_FLOORS]);
 /** 
 Initializes Queue system
 */
-bool queue_init(void);
+int queue_init(void);
 
 
 #endif
