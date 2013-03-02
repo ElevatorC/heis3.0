@@ -52,6 +52,7 @@ current_state_t sm_down(int queues[N_QUEUES][N_FLOORS]){
 }
 
 int sm_idle(int queues[N_QUEUES][N_FLOORS]) {
+	int floor;
     elev_set_speed(0);
 	if(elev_get_floor_sensor_signal() < 0){
         return STATE_UNDEF;     
@@ -59,7 +60,7 @@ int sm_idle(int queues[N_QUEUES][N_FLOORS]) {
        //ser etter elementer i respektiv kø 
     if(queue_check_queues(queues)==0){
     
-        for(int floor=0;floor<N_FLOORS;floor++){
+        for(floor=0;floor<N_FLOORS;floor++){
 			if(queues[QUEUE_COMMAND][floor] == 1){
 
                 //spesialtilfelle må enders i state!       

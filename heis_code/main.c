@@ -12,6 +12,8 @@ static int queues[N_QUEUES][N_FLOORS] = {{0}};
 
 int main()
 { 
+	//initialize states
+	int state = STATE_UNDEF;
 
     // Initialize hardware
     if (!elev_init()) 
@@ -33,9 +35,7 @@ int main()
     {
         elev_set_speed(-100);
     }
-
-	current_state_t state = STATE_UNDEF;
-
+	
     while (1) {
 
         //get button signal
@@ -94,11 +94,11 @@ int main()
 				if (elev_get_floor_sensor_signal() < 0)
 				{
 					elev_set_speed(-100);
-					return STATE_UNDEF;
+					state = STATE_UNDEF;
 				}
             
 				else if(elev_get_floor_sensor_signal() > 0){
-					return STATE_IDLE;            
+					state = STATE_IDLE;            
 				}
 				break;
                 //break;//crash it!

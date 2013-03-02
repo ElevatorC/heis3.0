@@ -26,8 +26,8 @@ int queue_is_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType){
 
 /* return TRUE if order table contains orders */
 int queue_check_orders(void){
-
-    for(int floor=0; floor < N_FLOORS; floor++){
+	int floor;
+    for(floor=0; floor < N_FLOORS; floor++){
         if(queues[QUEUE_UP][floor] || queues[QUEUE_DOWN][floor] || queues[QUEUE_COMMAND][floor])            
         {
             return 1;//TRUE;
