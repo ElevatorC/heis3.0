@@ -11,7 +11,6 @@
 // Number of signals and lamps on a per-floor basis (excl sensor)
 #define N_BUTTONS 3
 
-
 // Matrix of lamp channels indexed by floor and button type. Excuse ugly macro.
 #define LCM_SET(f) {LIGHT##f##_UP, LIGHT##f##_DOWN, LIGHT##f##_COMMAND}
 static const int lamp_channel_matrix[N_FLOORS][N_BUTTONS] =
@@ -23,15 +22,14 @@ static const int lamp_channel_matrix[N_FLOORS][N_BUTTONS] =
 static const int button_channel_matrix[N_FLOORS][N_BUTTONS] =
   {SCM_SET(1), SCM_SET(2), SCM_SET(3), SCM_SET(4)};
 
-//add to queue.c? to decrease dependancy
+//add to queue.c? to decrease dependancy, change function to add item to queue?
 void ui_check_buttons(void){
-	int button = 0;
-	int floor = 0;
-
+	int button;
+	int floor;
     static bool button_pushed[N_BUTTONS][N_FLOORS] = {{0}};
     
-	for(button=0; button<N_BUTTONS; button++){
-        for(floor=0; floor<N_FLOORS; floor++){
+	for(button  = 0; button<N_BUTTONS; button++){
+        for(floor = 0; floor<N_FLOORS; floor++){
             // Skip non-existing buttons
             if((floor == 0 && button == BUTTON_CALL_DOWN) 
                 || (floor == 3 && button == BUTTON_CALL_UP)) 
@@ -145,7 +143,7 @@ void ui_remove_order_light(int floor,int direction)
 }
 */
 
-void ui_set_door_open_lamp(bool value)
+void ui_set_door_open_lamp(int value)
 {
     if (value)
         io_set_bit(DOOR_OPEN);
@@ -154,7 +152,7 @@ void ui_set_door_open_lamp(bool value)
 }
 
 //elev_get_stop_signal=value
-void ui_set_stop_lamp(bool value)
+void ui_set_stop_lamp(int value)
 {
     if (value)
         io_set_bit(LIGHT_STOP);

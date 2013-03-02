@@ -34,7 +34,7 @@ void ui_set_door_open_lamp(int value);
   Turn stop lamp on or off.
   @param value Non-zero value turns lamp on, 0 turns lamp off.
 */
-void ui_set_stop_lamp(bool value);
+void ui_set_stop_lamp(int value);
 
 /**
   Set floor indicator lamp for a given floor.
