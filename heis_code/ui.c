@@ -200,7 +200,7 @@ int ui_get_floor_indicator()
 }
 
 
-bool ui_init(void)
+int ui_init(void)
 {
 
 	// Zero all floor button lamps
