@@ -27,7 +27,7 @@ void queue_add(int queues[N_QUEUES][N_FLOORS],int queueType, int floor);
 void queue_remove(int queues[N_QUEUES][N_FLOORS],int queueType, int floor);
 
 //Checks if queue array is empty
-int queue_is_empty(int queues[N_QUEUES][N_FLOORS],int queueType);
+int queue_is_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType);
 
 int queue_check_queues(int queues[N_QUEUES][N_FLOORS]);
 
