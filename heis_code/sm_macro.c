@@ -82,9 +82,9 @@ int sm_idle(int queues[N_QUEUES][N_FLOORS]) {
     }
 }
 
-current_state_t sm_stop(int queues[N_QUEUES][N_FLOORS) {
+current_state_t sm_stop(int queues[N_QUEUES][N_FLOORS]) {
     elev_set_speed(0);    
-    queue_clear(**queues);
+    queue_clear(queues);
     //evt ta høyde for obstruction
     return STATE_IDLE;
 }

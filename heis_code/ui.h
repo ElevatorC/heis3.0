@@ -14,18 +14,20 @@ typedef enum tag_ui_lamp_type {
   @param floor Which floor to check button. Must be 0-3.
   @return 0 if button is not pushed. 1 if button is pushed.
 */
+
 int ui_get_button_signal(int button, int floor);
 
 /** 
 Checks what buttons are being pushed and add ordered floor to
 its respective queue.
 */
-void ui_check_button_signal();
+//void ui_check_button_signal();
 
 /**
   Turn door-open lamp on or off.
   @param value Non-zero value turns lamp on, 0 turns lamp off.
 */
+
 void ui_set_door_open_lamp(bool value);
 
 /**

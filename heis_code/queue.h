@@ -19,17 +19,17 @@ struct queue {
 };
 
 //Add floor to selected queue
-void queue_add(int queue,int floor);
+void queue_add(int queues[N_QUEUES][N_FLOORS],int queueType, int floor);
 
 //Remove floor order from selected queue
-void queue_remove(int queue,int floor);
+void queue_remove(int queues[N_QUEUES][N_FLOORS],int queueType, int floor);
 
 //Checks if queue array is empty
-bool queue_is_empty(int *queues);
+bool queue_is_empty(int queues[N_QUEUES][N_FLOORS]);
 
 bool queue_check_queues(int queues[N_QUEUES][N_FLOORS]);
 
-void queue_clear(int &queues);
+void queue_clear(int queues[N_QUEUES][N_FLOORS]);
 /** 
 Initializes Queue system
 */
