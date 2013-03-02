@@ -55,7 +55,7 @@ int main()
 
 
             case STATE_UP:
-                // Finish up queue itterativt so after floor 1 it only cares about 2-4 etc..
+                // Finish up queue and command queue increasing so after 1. floor it only cares about 2-4.
                 // IF order on floor above current floor(function that read) and elevator in motion upwards
                 // when finished go to down after que_down check else go to idle
                 elev_set_speed(300);
@@ -63,7 +63,7 @@ int main()
 				break;
 
             case STATE_DOWN:
-                // Finish up queue decitterativt so after floor 4 it only cares about 3-1 etc..
+                // Finish up queue and command queue decsending so after 4. floor it only cares about 3-1.
                 // IF order on floor above current floor(function that read) and elevator in motion upwards
                 // when finished go to up after que_down check else go to idle
                 elev_set_speed(-300);
