@@ -28,7 +28,7 @@ its respective queue.
   @param value Non-zero value turns lamp on, 0 turns lamp off.
 */
 
-void ui_set_door_open_lamp(bool value);
+void ui_set_door_open_lamp(int value);
 
 /**
   Turn stop lamp on or off.
@@ -46,7 +46,7 @@ void ui_set_floor_indicator(int floor);
   Initialize user interface.
   @return 1 on success, 0 on failure.
 */
-bool ui_init(void);
+int ui_init(void);
 
 
 #endif

@@ -12,10 +12,6 @@ static int queues[N_QUEUES][N_FLOORS] = {{0}};
 
 int main()
 { 
-    // Initialize global queue arrays
-    // kanskje de ikke skal være global?
-    // int *queue_up    = {0,0,0,0};
-    // int *queue_down  = {0,0,0,0};
 
     // Initialize hardware
     if (!elev_init()) 
@@ -38,13 +34,15 @@ int main()
         elev_set_speed(-100);
     }
 
+	current_state_t state = STATE_UNDEF;
+
     while (1) {
 
         //get button signal
 
         // STATEMACHINE
         // Trenger en metode for å sjekke knapp input og legge det i kø array
-        switch(current_state_t state)
+        switch(state)
         {
             
             case STATE_IDLE:
