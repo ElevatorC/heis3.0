@@ -9,7 +9,7 @@ current_state_t sm_up(int queues[N_QUEUES][N_FLOORS]){
 	if(elev_get_stop_signal()) {
         return STATE_STOP;
     } //checking the queues of there is any orders left, if not return to idle state(true means direction is upwards)
-	else if(queue_is_empty(queues,QUEUE_UP) && !queue_check_relevant_command(get_floor_sensor_signal(), true)){
+	else if(queue_is_empty(queues,QUEUE_UP) && !queue_check_relevant_command(elev_get_floor_sensor_signal(), 1)){
         return STATE_IDLE;
     }
     else {
@@ -37,7 +37,7 @@ current_state_t sm_down(int queues[N_QUEUES][N_FLOORS]){
     if(elev_get_stop_signal()) {
         return STATE_STOP;
     } //checking the queues of there is any orders left, if not return to idle state(true means direction is downwards)
-	else if(queue_is_empty(queues,QUEUE_DOWN) && !queue_check_relevant_command(get_floor_sensor_signal(), false)){
+	else if(queue_is_empty(queues,QUEUE_DOWN) && !queue_check_relevant_command(elev_get_floor_sensor_signal(), 0)){
         return STATE_IDLE;
     }
     else {

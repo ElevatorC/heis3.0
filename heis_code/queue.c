@@ -37,16 +37,16 @@ int queue_check_orders(void){
 
 }
 //!!!!!brukes for å se om den har flere relevate elementer i command køen i sm_macro!!!!!
-bool queue_check_relevant_command(int floor, bool dir){
+int queue_check_relevant_command(int floor, int dir){
 	//if the elevator is heading up
 	if(dir) {
-		for(floor+1;floor<FLOOR_N;floor++){
+		for(floor+1;floor<N_FLOORS;floor++){
 			//if the command queue has a elements who are over the current
 			if(queues[QUEUE_COMMAND][floor]) {
-				return true;
+				return 1; //TRUE
 			}
 			else {
-				return false;
+				return 0; //FALSE
 			}
 		}
 	//else if elevator is heading down
@@ -55,10 +55,10 @@ bool queue_check_relevant_command(int floor, bool dir){
 		//if the command queue has a elements who are under the current
 		for(floor-1;floor<=0;floor--){
 			if(queues[QUEUE_COMMAND][floor]) {
-				return true;
+				return 1; //TRUE
 			}
 			else {
-				return false;
+				return 0; //FALSE
 			}
 		}
 	}

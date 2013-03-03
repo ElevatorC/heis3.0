@@ -32,6 +32,9 @@ int queue_is_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType);
 int queue_check_queues(int queues[N_QUEUES][N_FLOORS]);
 
 void queue_clear(int queues[N_QUEUES][N_FLOORS]);
+
+int queue_check_relevant_command(int floor, int dir);
+
 /** 
 Initializes Queue system
 */
