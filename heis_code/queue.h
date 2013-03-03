@@ -12,6 +12,7 @@ typedef enum queue_tag
 	,QUEUE_COMMAND = 2 //BUTTON_COMMAND
 } queue_t;
 
+
 /* Not needed
 struct queue {
    int queue_up[4];
@@ -33,7 +34,7 @@ int queue_check_queues(int queues[N_QUEUES][N_FLOORS]);
 
 void queue_clear(int queues[N_QUEUES][N_FLOORS]);
 
-int queue_check_relevant_command(int floor, int dir);
+int queue_check_relevant_command(int queues[N_QUEUES][N_FLOORS],int floor, int dir);
 
 /** 
 Initializes Queue system

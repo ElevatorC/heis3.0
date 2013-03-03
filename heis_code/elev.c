@@ -38,19 +38,15 @@ void elev_set_speed(int speed)
     io_write_analog(MOTOR, 2048 + 4*abs(speed));
 }
 
-
 int elev_get_obstruction_signal(void)
 {
     return io_read_bit(OBSTRUCTION);
 }
 
-
-
 int elev_get_stop_signal(void)
 {
     return io_read_bit(STOP);
 }
-
 
 int elev_get_floor_sensor_signal(void)
 {
@@ -68,7 +64,6 @@ int elev_get_floor_sensor_signal(void)
 
 int elev_init(void)
 {
-    int i;
 
     // Init hardware
     if (!io_init())
