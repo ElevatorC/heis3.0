@@ -23,10 +23,10 @@ static const int button_channel_matrix[N_FLOORS][N_BUTTONS] =
   {SCM_SET(1), SCM_SET(2), SCM_SET(3), SCM_SET(4)};
 
 //add to queue.c? to decrease dependancy, change function to add item to queue?
-void ui_check_buttons(void){
+void ui_check_buttons(int queues[N_QUEUES][N_FLOORS]){
+	
 	int button;
 	int floor;
-    static int button_pushed[N_BUTTONS][N_FLOORS] = {{0}};
     
 	for(button  = 0; button<N_BUTTONS; button++){
         for(floor = 0; floor<N_FLOORS; floor++){
@@ -36,20 +36,43 @@ void ui_check_buttons(void){
                 continue;
             else if(ui_get_button_signal(button, floor))
             {
-                button_pushed[button][floor] = 1; //TRUE;
+                queues[button][floor] = 1; //TRUE;
             }
-            // If button is now released, register order
-            else if(button_pushed[button][floor] == 1 /*TRUE*/)
+            // If button is now released, register order !check this one
+            /*else if(queues[button][floor] == 1 /*TRUE)
             {
-                button_pushed[button][floor] = 0; //FALSE;
+                queues[button][floor] = 0; //FALSE;
                 //add_to_queues(button,floor,1)
-                ui_set_button_lamp(button, floor, 1);
-            }
+            }*/
         }
     }
 
 }
 
+void ui_button_signals(int queues[N_QUEUES][N_FLOORS])
+{
+	ui_check_buttons(queues);
+	ui_set_lamps(queues);
+}
+
+void ui_set_lamps(int queues[N_QUEUES][N_FLOORS]){
+	int queue;
+	int floor;
+	
+	for(queue=0; queue < N_QUEUES; queue++){
+		for(floor = 0; floor < N_FLOORS; floor++){
+			if(queues[queue][floor] == 1){
+				ui_set_button_lamp(queue, floor, 1);
+			}
+			else if (queues[queue][floor] == 0)
+			{
+				ui_set_button_lamp(queue, floor, 0);
+			}
+
+		}
+	}
+}
+ 
 //maybe let the queue arrays in queues handle button lamps?
 //to decrease dependancy
 void ui_set_button_lamp(int button, int floor, int value)
@@ -60,8 +83,7 @@ void ui_set_button_lamp(int button, int floor, int value)
     assert(floor < N_FLOORS);
     assert(!(button == BUTTON_CALL_UP && floor == N_FLOORS-1));
     assert(!(button == BUTTON_CALL_DOWN && floor == 0));
-    assert(button == BUTTON_CALL_UP || button == BUTTON_CALL_DOWN || button ==
-            BUTTON_COMMAND);
+    assert(button == BUTTON_CALL_UP || button == BUTTON_CALL_DOWN || button == BUTTON_COMMAND);
 
     if (value == 1)
         io_set_bit(lamp_channel_matrix[floor][button]);

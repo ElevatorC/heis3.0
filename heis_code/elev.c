@@ -13,6 +13,8 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <stdio.h>
+
 
 void elev_set_speed(int speed)
 {
@@ -62,6 +64,10 @@ int elev_get_floor_sensor_signal(void)
         return -1;
 }
 
+int elev_get_motor_dir(void){
+	return io_read_bit(MOTORDIR);
+}
+
 int elev_init(void)
 {
 
@@ -70,6 +76,21 @@ int elev_init(void)
         return 0;
     // Return success.
     return 1;
+}
+
+// debug function
+void print_queues(int queues[N_QUEUES][N_FLOORS]){
+	int queue;
+	int floor;
+	
+	for(queue=0; queue < N_QUEUES; queue++){
+		printf("%d : [ ",queue);
+
+		for(floor = 0; floor < N_FLOORS; floor++){
+			printf("%d ",queues[queue][floor]);
+		}
+		printf("]\n");
+	}
 }
 
 

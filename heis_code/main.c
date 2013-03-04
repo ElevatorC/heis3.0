@@ -31,14 +31,18 @@ int main()
     printf("Activate obstruction and press the STOP button to stop elevator and exit program.\n");
 
     //Move elevator towards next bottom floor
-    if (elev_get_floor_sensor_signal() < 0)
-    {
-        elev_set_speed(-100);
-    }
+    //if (elev_get_floor_sensor_signal() < 0)
+    //{
+    //    elev_set_speed(-100);
+    //}
 
     while (1) {
 
         //get button signal
+		print_queues(queues);
+		ui_button_signals(queues);
+		printf("\nChanged queue:\n");
+		print_queues(queues);
 
         // STATEMACHINE
         // Trenger en metode for å sjekke knapp input og legge det i kø array
@@ -70,11 +74,7 @@ int main()
 				state = sm_down(queues);
 
             case STATE_DOOR_OPEN:
-                elev_set_speed(0);
-                while(elev_get_obstruction_signal() != 0){
-                        state = STATE_DOOR_OPEN;
-                }
-				state = STATE_IDLE;
+				state =sm_door_open(queues);
 				break;
                 //egen macro?
                 //sm_obstruction();

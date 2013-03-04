@@ -3,13 +3,15 @@
 #include "ui.h"
 #include "queue.h"
 
+#include <unistd.h>
+
 
 current_state_t sm_up(int queues[N_QUEUES][N_FLOORS]){
     int floor;
 	if(elev_get_stop_signal()) {
         return STATE_STOP;
     } //checking the queues of there is any orders left, if not return to idle state(true means direction is upwards)
-	else if(queue_is_empty(queues,QUEUE_UP) && !queue_check_relevant_command(queues, elev_get_floor_sensor_signal(), 1)){
+	else if(queue_is_empty(queues,QUEUE_UP) && !queue_check_relevant_command(queues, elev_get_floor_sensor_signal(), elev_get_motor_dir())){
         return STATE_IDLE;
     }
     else {
@@ -37,7 +39,7 @@ current_state_t sm_down(int queues[N_QUEUES][N_FLOORS]){
     if(elev_get_stop_signal()) {
         return STATE_STOP;
     } //checking the queues of there is any orders left, if not return to idle state(true means direction is downwards)
-	else if(queue_is_empty(queues,QUEUE_DOWN) && !queue_check_relevant_command(queues, elev_get_floor_sensor_signal(), 0)){
+	else if(queue_is_empty(queues,QUEUE_DOWN) && !queue_check_relevant_command(queues, elev_get_floor_sensor_signal(), elev_get_motor_dir())){
         return STATE_IDLE;
     }
     else {
@@ -50,7 +52,7 @@ current_state_t sm_down(int queues[N_QUEUES][N_FLOORS]){
 	}
 }
 
-int sm_idle(int queues[N_QUEUES][N_FLOORS]) {
+current_state_t sm_idle(int queues[N_QUEUES][N_FLOORS]) {
 	int floor;
     elev_set_speed(0);
 	if(elev_get_floor_sensor_signal() < 0){
@@ -90,4 +92,19 @@ current_state_t sm_stop(int queues[N_QUEUES][N_FLOORS]) {
     queue_clear(queues);
     //evt ta høyde for obstruction
     return STATE_IDLE;
+}
+
+current_state_t sm_door_open(int queues[N_QUEUES][N_FLOORS]){
+	elev_set_speed(0);
+    
+	while(elev_get_obstruction_signal() != 0){                
+		ui_set_door_open_lamp(1);
+    }
+
+	ui_set_door_open_lamp(1);
+	sleep(3);
+	ui_set_door_open_lamp(0);
+
+	return STATE_IDLE;
+
 }

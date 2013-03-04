@@ -8,6 +8,7 @@
 
 // Number of floors
 #define N_FLOORS 4
+#define N_QUEUES 3 
 
 
 /**
@@ -55,7 +56,12 @@ int elev_get_floor_sensor_signal(void);
   @returns current floor indicator lamp value
   from 0..3 calculated bitwise
 */
-int elev_get_floor_indicator();
+int elev_get_floor_indicator(void);
+
+int elev_get_motor_dir(void);
+
+//debugging
+void print_queues(int queues[N_QUEUES][N_FLOORS]);
 
 
 /**
