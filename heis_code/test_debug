@@ -1,2 +1,8 @@
 queue_check_queues er ikke implimentert (denne må fixes)
 queue_clear er ikke implemintert
+
+logikk fungerte ikke, total remake sm_macro?
+Sjekk dette når du kommer hjem.
+
+kø fungerer/ clear queue fungerer ikke
+clear funksjonen virker ikke å får ikke fjernet kø element
