@@ -94,7 +94,8 @@ current_state_t sm_stop(int queues[N_QUEUES][N_FLOORS]) {
     return STATE_IDLE;
 }
 
-current_state_t sm_door_open(int queues[N_QUEUES][N_FLOORS]){
+//1 is up and 0 is down
+current_state_t sm_door_open(int queues[N_QUEUES][N_FLOORS], int previousState){
 	elev_set_speed(0);
     
 	while(elev_get_obstruction_signal() != 0){                
@@ -104,6 +105,18 @@ current_state_t sm_door_open(int queues[N_QUEUES][N_FLOORS]){
 	ui_set_door_open_lamp(1);
 	sleep(3);
 	ui_set_door_open_lamp(0);
+
+	queues[QUEUE_COMMAND][elev_get_floor_sensor_signal()] = 0;
+
+	if (previousState)
+	{
+		queues[QUEUE_UP][elev_get_floor_sensor_signal()] = 0;
+	}
+	else if(previousState){
+		queues[QUEUE_DOWN][elev_get_floor_sensor_signal()] = 0;
+	}
+	// missing something here, ether it needs to know which
+	//state it came from to delete 
 
 	return STATE_IDLE;
 
