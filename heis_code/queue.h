@@ -36,6 +36,14 @@ void queue_clear(int queues[N_QUEUES][N_FLOORS]);
 
 int queue_check_relevant_command(int queues[N_QUEUES][N_FLOORS],int floor, int dir);
 
+int queue_up_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType, int currenFloor);
+
+int queue_down_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType, int currenFloor);
+
+int queue_check_orders(int queues[N_QUEUES][N_FLOORS], int currentFloor, int previousState);
+
+int queue_check_queues(int queues[N_QUEUES][N_FLOORS]);
+
 /** 
 Initializes Queue system
 */

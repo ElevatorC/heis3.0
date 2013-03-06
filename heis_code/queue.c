@@ -24,20 +24,41 @@ void queue_change_queue(int queues[N_QUEUES][N_FLOORS], queue_t queueType, int f
 	queues[queueType][floor] = value;
 }
 
-
-int queue_is_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType){
+//ser etter elementer over current
+int queue_up_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType, int currentFloor){
 	int floor;
 	
-	for(floor=0; floor < N_FLOORS; floor++){
-		if(queues[queueType][floor] == 1)
+	for(floor=currentFloor; floor < N_FLOORS; floor++){ 
+			if(queues[queueType][floor] == 1)
 			return 0; //FALSE
 	}
 
 	return 1; //TRUE
 
 }
+//ser etter elementer under current
+int queue_down_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType, int currentFloor){
+	int floor;
+	for(floor=currentFloor; floor >= 0; --floor){ // kanskje post
+			if(queues[queueType][floor] == 1)
+			return 0; //FALSE
+	}
 
-/* return TRUE if order table contains orders */
+	return 1; //TRUE
+
+}
+void queue_clear(int queues[N_QUEUES][N_FLOORS]){
+	int queue;
+	int floor;
+
+	for(queue=0; queue < N_QUEUES; queue++){
+		for(floor = 0; floor < N_FLOORS; floor++){
+			queues[queue][floor]=0;
+		}
+	}
+}
+
+/* return TRUE if order table contains orders 
 int queue_check_orders(int queues[N_QUEUES][N_FLOORS]){
 	int floor;
     for(floor=0; floor < N_FLOORS; floor++){
@@ -48,10 +69,50 @@ int queue_check_orders(int queues[N_QUEUES][N_FLOORS]){
     }
     return 0; //FALSE;
 
+}*/
+/* 
+int queue_check_orders(int queues[N_QUEUES][N_FLOORS], int currentFloor, int previousState){
+	int queue;
+	int floor;
+
+	//for(queue = 1; queue < N_QUEUES; queue++){
+		if(previousState == STATE_UP)
+			for(floor = 0; floor < N_FLOORS; floor++){
+				if(queues[1][floor]) {
+					return STATE_UP;			
+				}
+ 
+			}
+		else if(previousState == STATE_DOWN) {
+		
+		}
+
+		}
+	
+	return -1;
+	
+}*/
+
+int queue_queueType_order(int queues[N_QUEUES][N_FLOORS], int currentFloor, int previousState,int queueType){	
+	int floor;	
+	for(floor = currentFloor; floor < N_FLOORS; floor++){
+				if(queues[queueType][floor]) {
+					return STATE_UP;			
+	}
+	}
+	for(floor = currentFloor; floor >= 0; floor--){
+				if(queues[queueType][floor]) {
+					return STATE_DOWN;			
+	}
+	}
+	return -1;
+	
 }
+	
 
 //Olav kode
 //!!!!!brukes for å se om den har flere relevante elementer i command køen i sm_macro!!!!!
+/*
 int queue_check_relevant_command(int queues[N_QUEUES][N_FLOORS],int floor, int dir){
 	//if the elevator is heading up
 	if(dir) {
@@ -79,4 +140,6 @@ int queue_check_relevant_command(int queues[N_QUEUES][N_FLOORS],int floor, int d
 			}
 		}
 	}
+return -1; //debug
 }
+*/
