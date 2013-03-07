@@ -3,228 +3,245 @@
 #include "ui.h"
 #include "queue.h"
 
-<<<<<<< HEAD
-#include <unistd.h>
+#include <stdio.h>
+#include <time.h>
 
+static time_t timer;
 
-//sjekk stopp i main
-void sm_button_signals(int queues[N_QUEUES][N_FLOORS],int currentFloor){
-	ui_check_buttons(queues);
-	ui_set_lamps(queues);
-	ui_set_floor_indicator(currentFloor);
+void startTimer(){
+	time(&timer);
+}
+
+int checkTimer(int seconds){
+	time_t currentTime;
+	time(&currentTime);
+	int secondsPassed = difftime(currentTime,timer);
+	return secondsPassed > seconds;
+}
+
+current_state_t sm_up(int queues[N_QUEUES][N_FLOORS]){
+	
+	int currentFloor = ui_get_floor_indicator();
+	
+	if(elev_get_floor_sensor_signal()>=0){
+     currentFloor = elev_get_floor_sensor_signal();
+	}
+	
+	elev_set_speed(100);
+
+	if(queues[QUEUE_UP][currentFloor] ||(queues[QUEUE_COMMAND][currentFloor] && queues[QUEUE_UP][currentFloor])){
+		return STATE_DOOR_OPEN;	
+	}
+
+	else if(!queue_up_empty(queues, QUEUE_COMMAND, currentFloor)){
+		return STATE_UP;
+	}
+	
+	else if(queues[QUEUE_DOWN][3] == 1 && queue_up_empty(queues, QUEUE_UP, currentFloor))
+	{		
+			if(currentFloor != 3){
+				return STATE_UP;
+			}
+		return STATE_DOOR_OPEN;
+	}
+
+	else if(queues[QUEUE_DOWN][currentFloor] && queue_up_empty(queues, QUEUE_UP, currentFloor))
+	{
+		return STATE_DOOR_OPEN;	
+	}
+	
+	else if(!queue_up_empty(queues, QUEUE_UP, currentFloor)||!queue_up_empty(queues, QUEUE_DOWN, currentFloor))
+	{
+		return STATE_UP;
+	}
+	
+	//finished orders
+	return STATE_IDLE;
+}
+
+current_state_t sm_down(int queues[N_QUEUES][N_FLOORS]){
+	
+	int currentFloor=ui_get_floor_indicator(); 
+
+	if(elev_get_floor_sensor_signal() >= 0){
+   		currentFloor = elev_get_floor_sensor_signal();
+	}
+
+	elev_set_speed(-100);
+
+	if(queues[QUEUE_DOWN][currentFloor]||(queues[QUEUE_COMMAND][currentFloor])){
+		return STATE_DOOR_OPEN;	
+	}
+
+	else if(!queue_down_empty(queues, QUEUE_COMMAND, currentFloor)){
+		return STATE_DOWN;
+	}
+	
+	else if(queues[QUEUE_UP][0] == 1 && queue_down_empty(queues, QUEUE_DOWN, currentFloor)) //bug med (2ned og 2opp 3ned og 3opp aktiv + ende pungt stopper heisen)
+	{		
+			if(currentFloor != 0){
+				return STATE_DOWN;
+			}
+		return STATE_DOOR_OPEN;
+	}
+	
+	else if(queues[QUEUE_UP][currentFloor] && queue_down_empty(queues, QUEUE_DOWN, currentFloor)){
+		printf("\ncurrentFloor: %i\n",currentFloor);
+		return STATE_DOOR_OPEN;	
+	}
+	
+	else if(!queue_down_empty(queues, QUEUE_UP, currentFloor) || !queue_down_empty(queues, QUEUE_DOWN, currentFloor)){
+		printf("\nQueue Not empty Current floor is: %i\n",currentFloor);			
+		return STATE_DOWN;
+	}
+	
+	//finished orders
+	return STATE_IDLE;
 }
 
 current_state_t sm_idle(int queues[N_QUEUES][N_FLOORS], int previousState) {
-	int currentFloor = ui_get_floor_indicator();
 	elev_set_speed(0);
 	
-	if(previousState == STATE_IDLE)
-	{//bare la inn noen verdier for testing
-		if(queue_queueType_has_orders(queues,QUEUE_UP)){
-		//check up queue
-			return STATE_UP;
+	int currentFloor = ui_get_floor_indicator(); //virker kanskje ikke
+	
+	if(elev_get_floor_sensor_signal()>=0){
+   		currentFloor = elev_get_floor_sensor_signal();
+	}
+
+//	if(previousState == STATE_DOWN){
+		if(!queue_up_empty(queues, QUEUE_UP, currentFloor)||!queue_up_empty(queues, QUEUE_DOWN, currentFloor)){
+				return STATE_UP;
 		}
-		else if(queue_queueType_has_orders(queues,QUEUE_DOWN)){
-			return STATE_DOWN;
-		//check down queue
-		}
-	}
-	
-	else if(previousState == STATE_UP){
-		return STATE_DOWN;
-	}
-	
-	else if(previousState == STATE_DOWN)
-	{
-		return STATE_UP;
-	}
-
-	return STATE_IDLE;
-}
-
-current_state_t sm_up(int queues[N_QUEUES][N_FLOORS]){
-	int currentFloor = ui_get_floor_indicator();
-	//trenger knaskje ikke dette, bruke ui_get_floor_indicator er nok
-	if (elev_get_floor_sensor_signal() >= 0)
-	{
-		currentFloor = elev_get_floor_sensor_signal();
-	}
-
-	elev_set_speed(300);
-
-	if (queues[QUEUE_UP][currentFloor] == 1)
-	{
-		return STATE_DOOR_OPEN;
-	}
-
-	else if (queue_from_and_up_empty(queues,QUEUE_UP,currentFloor))
-	{
-		return STATE_IDLE;
-	}
-	return STATE_UP;
-}
-
-current_state_t sm_down(int queues[N_QUEUES][N_FLOORS]){
-	int currentFloor = ui_get_floor_indicator();
-	
-	if (elev_get_floor_sensor_signal() >= 0)
-	{
-		currentFloor = elev_get_floor_sensor_signal();
-	}
-
-	elev_set_speed(-300);
-
-
-	if (queues[QUEUE_DOWN][currentFloor] == 1)
-	{
-		return STATE_DOOR_OPEN;
-	}
-
-	else if (queue_from_and_down_empty(queues,QUEUE_DOWN,currentFloor))
-	{
-		return STATE_IDLE;
-	}
-	return STATE_DOWN;
-=======
-
-current_state_t sm_up(int queues[N_QUEUES][N_FLOORS]){
-    int floor;
-	if(elev_get_stop_signal()) {
-        return STATE_STOP;
-    } //checking the queues of there is any orders left, if not return to idle state(true means direction is upwards)
-	else if(queue_is_empty(queues,QUEUE_UP) && !queue_check_relevant_command(queues, elev_get_floor_sensor_signal(), 1)){
-        return STATE_IDLE;
-    }
-    else {
-		for(floor=0;floor<N_FLOORS;floor++){
-			//denne logikken fungerer kanskje ikke..
-			if(elev_get_floor_sensor_signal() == (queues[QUEUE_UP][floor] || queues[QUEUE_COMMAND][floor])){
-			//Open door
-				return STATE_DOOR_OPEN;
+	//}
+	//if(previousState == STATE_UP){
+		if(!queue_down_empty(queues, QUEUE_UP, currentFloor)||!queue_down_empty(queues, QUEUE_DOWN, currentFloor)){
+				return STATE_DOWN;
 			}
+		if(!queue_down_empty(queues, QUEUE_COMMAND, currentFloor))
+		{
+				return STATE_DOWN;
 		}
-	}
-	//!!!!!!!Dette gjøres i maiN!!!!!!!
-	//Dette gikk ikke!
-	/*
-	else {
-    elev_set_speed(300);
-        return STATE_UP;
-    }
-	*/
-
-}
-
-current_state_t sm_down(int queues[N_QUEUES][N_FLOORS]){
-	int floor;
-    if(elev_get_stop_signal()) {
-        return STATE_STOP;
-    } //checking the queues of there is any orders left, if not return to idle state(true means direction is downwards)
-	else if(queue_is_empty(queues,QUEUE_DOWN) && !queue_check_relevant_command(queues, elev_get_floor_sensor_signal(), 0)){
-        return STATE_IDLE;
-    }
-    else {
-	    for(floor=3;floor>=0;floor--){
-			if(elev_get_floor_sensor_signal() == (queues[QUEUE_DOWN][floor] || queues[QUEUE_COMMAND][floor])){
-	        //Open door
-	            return STATE_DOOR_OPEN;
-	        }
-	    }
-	}
-}
-
-int sm_idle(int queues[N_QUEUES][N_FLOORS]) {
-	int floor;
-    elev_set_speed(0);
-	if(elev_get_floor_sensor_signal() < 0){
-        return STATE_UNDEF;
-    }
-       //ser etter elementer i respektiv kø
-    if(queue_check_queues(queues)==0){
-
-        for(floor=0;floor<N_FLOORS;floor++){
-			if(queues[QUEUE_COMMAND][floor] == 1){
-
-                //spesialtilfelle må enders i state!
-                if(elev_get_floor_sensor_signal() == floor || elev_get_floor_sensor_signal()<floor){
-                //Dette er bare for å åpne dør, via upstate
-                    return STATE_UP;
-                }
-                else {
-                    return STATE_DOWN;
-                }
-            }
-        }
-    }
-	//Fryktelig forenklet utgave
-    //1=oppkø
-    else if(queue_check_queues(queues) == 1){
-        return STATE_UP;
-    }
-
-    //2=nedkø
-    else if(queue_check_queues(queues) == 2) {
-        return STATE_DOWN;
-    }
->>>>>>> parent of 8144ebc... More from the lab
+		if(!queue_up_empty(queues, QUEUE_COMMAND, currentFloor))
+		{
+				return STATE_UP;
+		}
+	//}
+		
+	if(elev_get_floor_sensor_signal()==-1)
+		return STATE_UNDEF;
+   // if(elev_get_obstruction_signal() == 1)
+	//	return STATE_DOOR_OPEN;
+	
+		return STATE_IDLE; //kanskje fjernes (mulig feil i logikk)
 }
 
 current_state_t sm_stop(int queues[N_QUEUES][N_FLOORS]) {
+	 
     elev_set_speed(0);
+    ui_set_stop_lamp(1);
+    if(queue_has_orders(queues) && !elev_get_stop_signal())
+    {
+
+    	ui_set_stop_lamp(0); //Skrur av stoplamp
+        return STATE_UNDEF; // IDLE fiks
+    }
     queue_clear(queues);
-<<<<<<< HEAD
-	ui_set_stop_lamp(1);
-	if (!queue_has_orders(queues))
-	{
-		ui_set_stop_lamp(1);
-		sleep(1);
-		ui_set_stop_lamp(0);
-		return STATE_STOP;
-	}
-    return STATE_IDLE;
+	return STATE_STOP;
+	
+	//while check if any quueues has order if not return stop state!
+    //evt ta høyde for obstruction
+	// en check på is empty
+    
 }
 
-//require previous state where STATE_UP and STATE_DOWN is defined in enum
-current_state_t sm_door_open(int queues[N_QUEUES][N_FLOORS], int previousState){
-	elev_set_speed(0);
-
-	int currentFloor = elev_get_floor_sensor_signal();
-	
-	ui_set_door_open_lamp(1);
-	sleep(3);
-	while(elev_get_obstruction_signal() != 0){                
-		ui_set_door_open_lamp(1);
-		sleep(1);
-		ui_set_door_open_lamp(0);
-    }
-	
-	ui_set_door_open_lamp(0);
-	queues[QUEUE_COMMAND][floor] = 0;
-	if(previousState == STATE_UP)
-	{
-		queues[QUEUE_UP][currentFloor] = 0; // kanskje ha en funksjon for det for � gj�re det modul�rt?
-		return STATE_UP;
-	}
-	else if(previousState == STATE_DOWN)
-	{
-		queues[QUEUE_DOWN][currentFloor] = 0;
-		return STATE_DOWN;
+current_state_t sm_undef(void){
+	if(elev_get_floor_sensor_signal()==-1){
+		elev_set_speed(-100);
+		return STATE_UNDEF;	
 	}
 	return STATE_IDLE;
 }
 
-current_state_t sm_undef(void){
-	if (elev_get_floor_sensor_signal() == -1)
-	{
-		elev_set_speed(-100);
-		return STATE_UNDEF;
+//1 is up and 0 is down
+current_state_t sm_door_open(int queues[N_QUEUES][N_FLOORS], int previousState){
+	elev_set_speed(0);
+	int timer = 0;
+	int currentFloor = elev_get_floor_sensor_signal(); 
+
+	ui_set_door_open_lamp(1);
+	startTimer();
+	while(timer != 1){
+		ui_button_signals(queues,currentFloor);//finner button signals
+		timer = checkTimer(3);
 	}
-		else if(elev_get_floor_sensor_signal() >= 0){
-		return STATE_IDLE;
-	}			
+
+	while(elev_get_obstruction_signal() != 0){
+		timer=0;                
+		ui_set_door_open_lamp(1);
+		while(timer != 1){
+		ui_button_signals(queues,currentFloor);//finner button signals
+		timer = checkTimer(1);
+		}	
+		ui_set_door_open_lamp(0);
+		timer = 0;
+		while(timer != 1){
+		ui_button_signals(queues,currentFloor);//finner button signals
+		timer = checkTimer(1);
+		}	
+		printf("\nObstruction");
+    }
+     //kanskje lage no som ikker slukker lampen med en gang
+	ui_set_door_open_lamp(0);
+
+	//if(queues[QUEUE_COMMAND][elev_get_floor_sensor_signal()]){
+	//	queues[QUEUE_COMMAND][elev_get_floor_sensor_signal()] = 0;
+	//	printf("\ncommand Queue");
+		
+//	}
+    if (previousState == STATE_UP)
+	{
+		queues[QUEUE_COMMAND][currentFloor] = 0;
+		// dette må også fikses
+		if(currentFloor == 3){
+			queues[QUEUE_DOWN][currentFloor] = 0;
+		}
+		else if(!queue_up_empty(queues, QUEUE_UP, currentFloor)){
+			queues[QUEUE_UP][currentFloor] = 0;
+		}
+		else if(queue_up_empty(queues, QUEUE_UP, currentFloor) && !queue_down_empty(queues, QUEUE_DOWN, currentFloor))
+		{ // and command over currentFloor
+			queues[QUEUE_DOWN][currentFloor] = 0;
+			return STATE_DOWN;
+		}
+		
+		printf("\nup Queue");
+		return STATE_UP;
+	}
+	
+	else if(previousState == STATE_DOWN)
+	{
+		queues[QUEUE_COMMAND][currentFloor] = 0;
+		if(currentFloor == 0){
+			queues[QUEUE_UP][currentFloor] = 0;
+		}
+		else if(!queue_up_empty(queues, QUEUE_UP, currentFloor)){
+			queues[QUEUE_DOWN][currentFloor] = 0;
+		}
+		else if(queue_down_empty(queues, QUEUE_DOWN, currentFloor) && !queue_up_empty(queues, QUEUE_UP, currentFloor))
+		{
+			queues[QUEUE_UP][currentFloor] = 0;
+			return STATE_UP;
+		}
+		
+
+		printf("\ndown Queue");
+		return STATE_DOWN;
+
+	}
+	
+	// missing something here, ether it needs to know which
+	//state it came from to delete 
+
+	return STATE_IDLE;
+
 }
-=======
-    //evt ta høyde for obstruction
-    return STATE_IDLE;
-}
->>>>>>> parent of 8144ebc... More from the lab

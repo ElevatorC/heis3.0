@@ -12,6 +12,15 @@ typedef enum queue_tag
 	,QUEUE_COMMAND = 2 //BUTTON_COMMAND
 } queue_t;
 
+
+/* Not needed
+struct queue {
+   int queue_up[4];
+   int queue_down[4];
+   int queue_command[4]; 
+};
+*/
+
 //Add floor to selected queue
 void queue_add(int queues[N_QUEUES][N_FLOORS],int queueType, int floor);
 
@@ -19,23 +28,24 @@ void queue_add(int queues[N_QUEUES][N_FLOORS],int queueType, int floor);
 void queue_remove(int queues[N_QUEUES][N_FLOORS],int queueType, int floor);
 
 //Checks if queue array is empty
-int queue_has_orders(int queues[N_QUEUES][N_FLOORS]);
+int queue_is_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType);
 
 int queue_check_queues(int queues[N_QUEUES][N_FLOORS]);
 
-int queue_queueType_has_orders(int queues[N_QUEUES][N_FLOORS],int queueType);
-
-<<<<<<< HEAD
 void queue_clear(int queues[N_QUEUES][N_FLOORS]);
 
+int queue_check_relevant_command(int queues[N_QUEUES][N_FLOORS],int floor, int dir);
+
+int queue_up_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType, int currenFloor);
+
+int queue_down_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType, int currenFloor);
+
+int queue_check_orders(int queues[N_QUEUES][N_FLOORS], int currentFloor, int previousState);
+
 int queue_check_queues(int queues[N_QUEUES][N_FLOORS]);
 
-int queue_from_and_up_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType, int currentFloor);
+int queue_has_orders(int queues[N_QUEUES][N_FLOORS]);
 
-int queue_from_and_down_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType, int currentFloor);
-
-=======
->>>>>>> parent of 8144ebc... More from the lab
 /** 
 Initializes Queue system
 */

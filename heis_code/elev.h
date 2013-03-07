@@ -20,6 +20,7 @@
 void elev_set_speed(int speed);
 
 
+
 /**
   Turn door-open lamp on or off.
   @param value Non-zero value turns lamp on, 0 turns lamp off.
@@ -27,11 +28,13 @@ void elev_set_speed(int speed);
 void elev_set_door_open_lamp(int value);
 
 
+
 /**
   Get signal from obstruction switch.
   @return 1 if obstruction is enabled. 0 if not.
 */
 int elev_get_obstruction_signal(void);
+
 
 
 /**
@@ -49,7 +52,12 @@ int elev_get_stop_signal(void);
 int elev_get_floor_sensor_signal(void);
 
 
-/** Egenkode */
+/** Egenkode
+  @returns current floor indicator lamp value
+  from 0..3 calculated bitwise
+*/
+int elev_get_floor_indicator(void);
+
 int elev_get_motor_dir(void);
 
 //debugging

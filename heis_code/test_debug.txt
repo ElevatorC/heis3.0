@@ -1,0 +1,33 @@
+
+VIKTIG! Må gjøres ferdig på fredag eller noen må gå innom
+labben og teste dette på lørdag/søndag.
+
+Det er en del bugs() som må fikse på imorgen/fredagen:
+
+bugg på elev_sensor_signal funksjonene??
+sette en if(elev_sensor_signal == -1) ikke trigger open door
+
+
+Hvis en ekstrem(0 eller 3) er aktivert + en knapp fra den andre køen kræsjer den på open door
+i mellom etasjer av og til. Test dette å finn ut hvor den failer.
+
+Flere kanpper opp aktivert og command 4 gikk den out of bound 
+
+ned(3) + 4 gir out of bound  
+
+opp(0) + 1 gir ikke samme feil
+
+Noe feil med kommando logikken når den er på vei opp(sjekk sm_up())
+
+ ned fra 4 etassje med 1 knapp gir opendoor kræsj
+ opp gir ikke samme feil.
+ bare hvis man trykker ned 1 etasje
+
+ feil i sm_down/eller open door når man kommer fra down
+ feil med command[3]
+
+Hva trengs å gjøres i helga:
+#1 Rydde opp i kode
+#2 Kommentere funksjoner i header og i .c. I .c står det hva funksjonen gjør i .h står det hva den gjør og hva den returener.
+#1 Lage kommunikasjons diagram UML/lage ferdig UML ut i fra hva det står 
+
