@@ -115,7 +115,7 @@ current_state_t sm_door_open(int queues[N_QUEUES][N_FLOORS], int previousState){
     }
 	
 	ui_set_door_open_lamp(0);
-	
+	queues[QUEUE_COMMAND][floor] = 0;
 	if(previousState == STATE_UP)
 	{
 		queues[QUEUE_UP][currentFloor] = 0; // kanskje ha en funksjon for det for å gjøre det modulært?
