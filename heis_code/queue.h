@@ -25,6 +25,7 @@ int queue_check_queues(int queues[N_QUEUES][N_FLOORS]);
 
 int queue_queueType_has_orders(int queues[N_QUEUES][N_FLOORS],int queueType);
 
+<<<<<<< HEAD
 void queue_clear(int queues[N_QUEUES][N_FLOORS]);
 
 int queue_check_queues(int queues[N_QUEUES][N_FLOORS]);
@@ -33,6 +34,8 @@ int queue_from_and_up_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType, in
 
 int queue_from_and_down_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType, int currentFloor);
 
+=======
+>>>>>>> parent of 8144ebc... More from the lab
 /** 
 Initializes Queue system
 */

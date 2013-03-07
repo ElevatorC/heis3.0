@@ -23,11 +23,14 @@ static const int button_channel_matrix[N_FLOORS][N_BUTTONS] =
   {SCM_SET(1), SCM_SET(2), SCM_SET(3), SCM_SET(4)};
 
 //add to queue.c? to decrease dependancy, change function to add item to queue?
-void ui_check_buttons(int queues[N_QUEUES][N_FLOORS]){
-	
+void ui_check_buttons(void){
 	int button;
 	int floor;
+<<<<<<< HEAD
 	int currentFloor = ui_get_floor_indicator();
+=======
+    static int button_pushed[N_BUTTONS][N_FLOORS] = {{0}};
+>>>>>>> parent of 8144ebc... More from the lab
     
 	for(button  = 0; button<N_BUTTONS; button++){
         for(floor = 0; floor<N_FLOORS; floor++){
@@ -38,6 +41,7 @@ void ui_check_buttons(int queues[N_QUEUES][N_FLOORS]){
            
 			else if(ui_get_button_signal(button, floor))
             {
+<<<<<<< HEAD
                 queues[button][floor] = 1; //TRUE;
 				//added this don't know if it works it's supposedly going to put command in up and down queue
 				if(floor > currentFloor && button==BUTTON_COMMAND){
@@ -49,10 +53,22 @@ void ui_check_buttons(int queues[N_QUEUES][N_FLOORS]){
 				}
 
             }
+=======
+                button_pushed[button][floor] = 1; //TRUE;
+            }
+            // If button is now released, register order
+            else if(button_pushed[button][floor] == 1 /*TRUE*/)
+            {
+                button_pushed[button][floor] = 0; //FALSE;
+                //add_to_queues(button,floor,1)
+                ui_set_button_lamp(button, floor, 1);
+            }
+>>>>>>> parent of 8144ebc... More from the lab
         }
     }
 }
 
+<<<<<<< HEAD
 void ui_button_signals(int queues[N_QUEUES][N_FLOORS])
 {
 	ui_check_buttons(queues);
@@ -77,6 +93,8 @@ void ui_set_lamps(int queues[N_QUEUES][N_FLOORS]){
 	}
 }
  
+=======
+>>>>>>> parent of 8144ebc... More from the lab
 //maybe let the queue arrays in queues handle button lamps?
 //to decrease dependancy
 void ui_set_button_lamp(int button, int floor, int value)
@@ -85,9 +103,10 @@ void ui_set_button_lamp(int button, int floor, int value)
 	// and prints an informative error message. Useful for debugging.
     assert(floor >= 0);
     assert(floor < N_FLOORS);
-  //  assert(!(button == BUTTON_CALL_UP && floor == N_FLOORS-1));
-  //  assert(!(button == BUTTON_CALL_DOWN && floor == 0));
-  //  assert(button == BUTTON_CALL_UP || button == BUTTON_CALL_DOWN || button == BUTTON_COMMAND);
+    assert(!(button == BUTTON_CALL_UP && floor == N_FLOORS-1));
+    assert(!(button == BUTTON_CALL_DOWN && floor == 0));
+    assert(button == BUTTON_CALL_UP || button == BUTTON_CALL_DOWN || button ==
+            BUTTON_COMMAND);
 
     if (value == 1)
         io_set_bit(lamp_channel_matrix[floor][button]);
@@ -112,6 +131,7 @@ int ui_get_button_signal(int button, int floor)
         return 0;
 }
 
+<<<<<<< HEAD
 int ui_get_floor_indicator(void)
 {
     if 	(io_read_bit(FLOOR_IND1)==0 && io_read_bit(FLOOR_IND2)==0)
@@ -124,6 +144,64 @@ int ui_get_floor_indicator(void)
         return 3;   // else
     return -1; //for debugging purposes
 }
+=======
+// bruke queues til å fjerne og sette ordre lys?
+/*
+void ui_remove_order_light(int floor,int direction)
+{
+	if(direction) {
+		switch(floor) 
+		{
+
+		case 0:
+			CLEAR_BIT(PORT3, LIGHT_UP1);
+			CLEAR_BIT(PORT3, LIGHT_ORD1);
+			break;
+
+		case 1:
+			CLEAR_BIT(PORT3, LIGHT_ORD2);
+			CLEAR_BIT(PORT3, LIGHT_UP2);
+			break;
+
+		case 2:
+			CLEAR_BIT(PORT3, LIGHT_ORD3);
+			CLEAR_BIT(PORT3, LIGHT_UP3);
+			break;
+
+		case 3:
+			CLEAR_BIT(PORT3, LIGHT_DOWN4);
+			CLEAR_BIT(PORT3, LIGHT_ORD4);
+			break;
+		}
+	}
+
+	else {
+		switch(floor) {
+		
+		case 0:
+			CLEAR_BIT(PORT3, LIGHT_UP1);
+			CLEAR_BIT(PORT3, LIGHT_ORD1);
+			break;
+
+		case 1:
+			CLEAR_BIT(PORT3, LIGHT_ORD2);
+			CLEAR_BIT(PORT3, LIGHT_DOWN2);
+			break;
+		
+		case 2:
+			CLEAR_BIT(PORT3, LIGHT_ORD3);
+			CLEAR_BIT(PORT3, LIGHT_DOWN3);
+			break;
+		
+		case 3:
+			CLEAR_BIT(PORT3, LIGHT_DOWN4);
+			CLEAR_BIT(PORT3, LIGHT_ORD4);
+			break;
+		}
+	}
+}
+*/
+>>>>>>> parent of 8144ebc... More from the lab
 
 void ui_set_door_open_lamp(int value)
 {
@@ -146,8 +224,13 @@ void ui_set_floor_indicator(int floor)
 {
 	// assert crashes the program deliberately if it's condition does not hold,
 	// and prints an informative error message. Useful for debugging.
+<<<<<<< HEAD
 	//    assert(floor >= 0);
 	//    assert(floor < N_FLOORS);
+=======
+    assert(floor >= 0);
+    assert(floor < N_FLOORS);
+>>>>>>> parent of 8144ebc... More from the lab
 
     if (floor & 0x02)
         io_set_bit(FLOOR_IND1);
