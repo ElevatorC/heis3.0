@@ -11,6 +11,6 @@ current_state_t sm_down(int queues[N_QUEUES][N_FLOORS]);
 current_state_t sm_idle(int queues[N_QUEUES][N_FLOORS], int previousState);
 current_state_t sm_stop(int queues[N_QUEUES][N_FLOORS]);
 current_state_t sm_door_open(int queues[N_QUEUES][N_FLOORS], int previousState);
-current_state_t sm_undef(void);
+current_state_t sm_undef();
 
 #endif

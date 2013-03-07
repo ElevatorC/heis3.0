@@ -82,7 +82,7 @@ int elev_init(void)
 void print_queues(int queues[N_QUEUES][N_FLOORS]){
 	int queue;
 	int floor;
-	
+	printf("\n0:Up queue, 1:Down queue and 2:Command Queue\n");
 	for(queue=0; queue < N_QUEUES; queue++){
 		printf("%d : [ ",queue);
 

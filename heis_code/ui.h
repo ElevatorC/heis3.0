@@ -21,7 +21,7 @@ typedef enum tag_ui_lamp_type {
 
 int ui_get_button_signal(int button, int floor);
 
-void ui_button_signals(int queues[N_QUEUES][N_FLOORS],int floor);
+void ui_button_signals(int queues[N_QUEUES][N_FLOORS]);
 
 void ui_set_lamps(int queues[N_QUEUES][N_FLOORS]);
 
@@ -29,7 +29,7 @@ void ui_set_lamps(int queues[N_QUEUES][N_FLOORS]);
 Checks what buttons are being pushed and add ordered floor to
 its respective queue.
 */
-//void ui_check_button_signal();
+void ui_check_buttons(int queues[N_QUEUES][N_FLOORS]);
 
 /**
   Turn door-open lamp on or off.
@@ -49,6 +49,11 @@ void ui_set_stop_lamp(int value);
   @param floor Which floor lamp to turn on. Other floor lamps are turned off.
 */
 void ui_set_floor_indicator(int floor);
+/**
+  Get floor indicator lamp for a given floor.
+  @param floor Which floor lamp to turn on. Other floor lamps are turned off.
+  Returns 0 to 3;
+*/
 int ui_get_floor_indicator(void);
 
 void ui_set_button_lamp(int button, int floor, int value);

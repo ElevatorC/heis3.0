@@ -27,33 +27,36 @@ void ui_check_buttons(int queues[N_QUEUES][N_FLOORS]){
 	
 	int button;
 	int floor;
+	int currentFloor = ui_get_floor_indicator();
     
 	for(button  = 0; button<N_BUTTONS; button++){
         for(floor = 0; floor<N_FLOORS; floor++){
-            // Skip non-existing buttons
-            if((floor == 0 && button == BUTTON_CALL_DOWN) 
-                || (floor == 3 && button == BUTTON_CALL_UP)) 
+            
+			// Skip non-existing buttons
+            if((floor == 0 && button == BUTTON_CALL_DOWN) || (floor == 3 && button == BUTTON_CALL_UP)) 
                 continue;
-            else if(ui_get_button_signal(button, floor))
+           
+			else if(ui_get_button_signal(button, floor))
             {
                 queues[button][floor] = 1; //TRUE;
+				//added this don't know if it works it's supposedly going to put command in up and down queue
+				if(floor > currentFloor && button==BUTTON_COMMAND){
+					queues[BUTTON_CALL_UP][floor] = 1;
+				}
+				else
+				{
+					queues[BUTTON_CALL_DOWN][floor] = 1;
+				}
+
             }
-            // If button is now released, register order !check this one
-            /*else if(queues[button][floor] == 1 TRUE)
-            {
-                queues[button][floor] = 0; //FALSE;
-                //add_to_queues(button,floor,1)
-            }*/
         }
     }
-
 }
 
-void ui_button_signals(int queues[N_QUEUES][N_FLOORS],int floor)
+void ui_button_signals(int queues[N_QUEUES][N_FLOORS])
 {
 	ui_check_buttons(queues);
 	ui_set_lamps(queues);
-	ui_set_floor_indicator(floor);
 }
 
 void ui_set_lamps(int queues[N_QUEUES][N_FLOORS]){
@@ -109,6 +112,19 @@ int ui_get_button_signal(int button, int floor)
         return 0;
 }
 
+int ui_get_floor_indicator(void)
+{
+    if 	(io_read_bit(FLOOR_IND1)==0 && io_read_bit(FLOOR_IND2)==0)
+        return 0;
+    if(io_read_bit(FLOOR_IND1) == 0 && io_read_bit(FLOOR_IND2) == 1)
+		return 1;
+	if(io_read_bit(FLOOR_IND1) == 1 && io_read_bit(FLOOR_IND2) == 0)
+        return 2;
+    if(io_read_bit(FLOOR_IND1) == 1 && io_read_bit(FLOOR_IND2) == 1)
+        return 3;   // else
+    return -1; //for debugging purposes
+}
+
 void ui_set_door_open_lamp(int value)
 {
     if (value)
@@ -130,8 +146,8 @@ void ui_set_floor_indicator(int floor)
 {
 	// assert crashes the program deliberately if it's condition does not hold,
 	// and prints an informative error message. Useful for debugging.
-    //assert(floor >= 0);
-    //assert(floor < N_FLOORS);
+	//    assert(floor >= 0);
+	//    assert(floor < N_FLOORS);
 
     if (floor & 0x02)
         io_set_bit(FLOOR_IND1);
@@ -146,22 +162,22 @@ void ui_set_floor_indicator(int floor)
 
 //own added function reads FLOOR_IND1 and FLOOR_IND2 and returns the floor number which the elevator was at. 
 //returns previous floor from 0 to 3
-int ui_get_floor_indicator(void)
+int ui_get_floor_indicator()
 {
-    //int bit1 =io_read_bit(FLOOR_IND1);
-    //int bit2 =io_read_bit(FLOOR_IND2);
+    int bit1=io_read_bit(FLOOR_IND1);
+    int bit2=io_read_bit(FLOOR_IND1);
 
-    if 	(io_read_bit(FLOOR_IND1)==0 && io_read_bit(FLOOR_IND2)==0)
+    if ((bit1 && bit2)==0)
         return 0;
-    if(io_read_bit(FLOOR_IND1) == 0 && io_read_bit(FLOOR_IND2) == 1)
-		return 1;
-	if(io_read_bit(FLOOR_IND1) == 1 && io_read_bit(FLOOR_IND2) == 0)
+    else if(bit1 == 1 && bit2 == 0)
+        return 1;
+    else if(bit1 == 0 && bit2 == 1)
         return 2;
-    if(io_read_bit(FLOOR_IND1) == 1 && io_read_bit(FLOOR_IND2) == 1)
-        return 3;   // else
-    return -1; //for debugging purposes
+    else if(bit1 == 1 && bit2 == 1)
+        return 3;
+    else
+        return -1; //for debugging purposes
 }
-
 
 int ui_init(void)
 {
