@@ -181,14 +181,29 @@ current_state_t sm_door_open(int queues[N_QUEUES][N_FLOORS], int previousState){
 	ui_set_door_open_lamp(1);
 	startTimer();
 	while(timer != 1){
+
+		if(elev_get_stop_signal())
+		{
+            return STATE_STOP;
+		}
+			
 		ui_button_signals(queues);//finner button signals
 		timer = checkTimer(3);
+		 
 	}
 
-	while(elev_get_obstruction_signal() != 0){              
+	while(elev_get_obstruction_signal() != 0){
+		
+		if(elev_get_stop_signal())
+		{
+			ui_set_door_open_lamp(0);
+            return STATE_STOP;
+		}  
+
 		ui_set_door_open_lamp(1);
 		printf("\nObstruction");
-    }
+
+	    }
      //kanskje lage no som ikker slukker lampen med en gang
 	ui_set_door_open_lamp(0);
 

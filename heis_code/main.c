@@ -114,11 +114,14 @@ int main()
 		}
 
 
-        // Check if stop button and obstruction is active, if so, stop elevator and exit program.
-	if (elev_get_obstruction_signal() &&  elev_get_stop_signal()) {
+    	// Check if stop button and obstruction is active, if so, stop elevator and exit program.
+		/*
+		if (elev_get_obstruction_signal() &&  elev_get_stop_signal() ) {
             elev_set_speed(0);
             break;
-        }
+    	}
+		*/
+
     }//End While
 
     return 0;
