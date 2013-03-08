@@ -32,6 +32,10 @@ current_state_t sm_up(int queues[N_QUEUES][N_FLOORS]){
 	if(queues[QUEUE_UP][currentFloor] ||(queues[QUEUE_COMMAND][currentFloor] && queues[QUEUE_UP][currentFloor])){
 		return STATE_DOOR_OPEN;	
 	}
+	else if(queues[QUEUE_COMMAND][currentFloor] && (elev_get_floor_sensor_signal() != -1))
+	{
+		return STATE_DOOR_OPEN;
+	}
 
 	else if(!queue_up_empty(queues, QUEUE_COMMAND, currentFloor)){
 		return STATE_UP;
@@ -54,6 +58,7 @@ current_state_t sm_up(int queues[N_QUEUES][N_FLOORS]){
 	{
 		return STATE_UP;
 	}
+
 	
 	//finished orders
 	return STATE_IDLE;
@@ -69,8 +74,13 @@ current_state_t sm_down(int queues[N_QUEUES][N_FLOORS]){
 
 	elev_set_speed(-100);
 
-	if(queues[QUEUE_DOWN][currentFloor]||(queues[QUEUE_COMMAND][currentFloor])){
+	if(queues[QUEUE_DOWN][currentFloor]||((queues[QUEUE_COMMAND][currentFloor]) && queues[QUEUE_DOWN][currentFloor])){
 		return STATE_DOOR_OPEN;	
+	}
+
+	else if(queues[QUEUE_COMMAND][currentFloor] && (elev_get_floor_sensor_signal() != -1))
+	{
+		return STATE_DOOR_OPEN;
 	}
 
 	else if(!queue_down_empty(queues, QUEUE_COMMAND, currentFloor)){
@@ -171,23 +181,12 @@ current_state_t sm_door_open(int queues[N_QUEUES][N_FLOORS], int previousState){
 	ui_set_door_open_lamp(1);
 	startTimer();
 	while(timer != 1){
-		ui_button_signals(queues,currentFloor);//finner button signals
+		ui_button_signals(queues);//finner button signals
 		timer = checkTimer(3);
 	}
 
-	while(elev_get_obstruction_signal() != 0){
-		timer=0;                
+	while(elev_get_obstruction_signal() != 0){              
 		ui_set_door_open_lamp(1);
-		while(timer != 1){
-		ui_button_signals(queues,currentFloor);//finner button signals
-		timer = checkTimer(1);
-		}	
-		ui_set_door_open_lamp(0);
-		timer = 0;
-		while(timer != 1){
-		ui_button_signals(queues,currentFloor);//finner button signals
-		timer = checkTimer(1);
-		}	
 		printf("\nObstruction");
     }
      //kanskje lage no som ikker slukker lampen med en gang
@@ -221,12 +220,15 @@ current_state_t sm_door_open(int queues[N_QUEUES][N_FLOORS], int previousState){
 	else if(previousState == STATE_DOWN)
 	{
 		queues[QUEUE_COMMAND][currentFloor] = 0;
+
 		if(currentFloor == 0){
 			queues[QUEUE_UP][currentFloor] = 0;
 		}
-		else if(!queue_up_empty(queues, QUEUE_UP, currentFloor)){
+		//se over denne
+		else if(!queue_down_empty(queues, QUEUE_DOWN, currentFloor)){
 			queues[QUEUE_DOWN][currentFloor] = 0;
 		}
+
 		else if(queue_down_empty(queues, QUEUE_DOWN, currentFloor) && !queue_up_empty(queues, QUEUE_UP, currentFloor))
 		{
 			queues[QUEUE_UP][currentFloor] = 0;

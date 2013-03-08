@@ -49,11 +49,10 @@ void ui_check_buttons(int queues[N_QUEUES][N_FLOORS]){
 
 }
 
-void ui_button_signals(int queues[N_QUEUES][N_FLOORS],int floor)
+void ui_button_signals(int queues[N_QUEUES][N_FLOORS])
 {
 	ui_check_buttons(queues);
 	ui_set_lamps(queues);
-	ui_set_floor_indicator(floor);
 }
 
 void ui_set_lamps(int queues[N_QUEUES][N_FLOORS]){

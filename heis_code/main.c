@@ -43,7 +43,9 @@ int main()
    		floor = elev_get_floor_sensor_signal();
 		}
         //get button signal
-		ui_button_signals(queues,floor);
+		ui_button_signals(queues);
+		ui_set_floor_indicator(floor);
+
 		if(state != previousState){
         print_queues(queues);			
 		printf("\nChanged queue:\n");
@@ -58,7 +60,6 @@ int main()
         }
         
         // STATEMACHINE
-        // Trenger en metode for å sjekke knapp input og legge det i kø array
         switch(state)
         {
 
@@ -96,14 +97,6 @@ int main()
 				state =sm_door_open(queues,previousState);
                 previousState = STATE_DOOR_OPEN;
 				break;
-                //egen macro?
-                //sm_obstruction();
-
-                //light door pannel
-
-                //usleep(3000);
-                //queue_delete que element
-                //slett element i listen
 
             case STATE_STOP:
                 if(state != previousState)

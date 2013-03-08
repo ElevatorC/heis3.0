@@ -21,7 +21,7 @@ typedef enum tag_ui_lamp_type {
 
 int ui_get_button_signal(int button, int floor);
 
-void ui_button_signals(int queues[N_QUEUES][N_FLOORS],int floor);
+void ui_button_signals(int queues[N_QUEUES][N_FLOORS]);
 
 void ui_set_lamps(int queues[N_QUEUES][N_FLOORS]);
 
