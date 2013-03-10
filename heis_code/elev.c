@@ -5,8 +5,6 @@
 
 //Edited by Sigvart M. Hovland and Olav Kallerud
 
-
-
 #include "channels.h"
 #include "elev.h"
 #include "io.h"
@@ -21,7 +19,7 @@ void elev_set_speed(int speed)
     // In order to sharply stop the elevator, the direction bit is toggled
     // before setting speed to zero.
     static int last_speed = 0;
-    
+
     // If to start (speed > 0)
     if (speed > 0)
         io_clear_bit(MOTORDIR);
@@ -82,7 +80,7 @@ int elev_init(void)
 void print_queues(int queues[N_QUEUES][N_FLOORS]){
 	int queue;
 	int floor;
-	
+
 	for(queue=0; queue < N_QUEUES; queue++){
 		printf("%d : [ ",queue);
 
