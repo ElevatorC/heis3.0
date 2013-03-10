@@ -11,7 +11,6 @@ static time_t timer;
 void startTimer() {
 	time(&timer);
 }
-
 int checkTimer(int seconds) {
 	time_t currentTime;
 	time(&currentTime);
