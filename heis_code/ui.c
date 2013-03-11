@@ -2,10 +2,8 @@
 	handels button input/user interaction from panel
 */
 #include "ui.h"
-#include "elev.h"
 #include "io.h"
 #include "channels.h"
-
 #include <assert.h>
 
 // Number of signals and lamps on a per-floor basis (excl sensor)
@@ -22,37 +20,31 @@ static const int lamp_channel_matrix[N_FLOORS][N_BUTTONS] =
 static const int button_channel_matrix[N_FLOORS][N_BUTTONS] =
   {SCM_SET(1), SCM_SET(2), SCM_SET(3), SCM_SET(4)};
 
-//add to queue.c? to decrease dependancy, change function to add item to queue?
+void ui_button_signals(int queues[N_QUEUES][N_FLOORS])
+{
+	ui_check_buttons(queues);
+	ui_set_lamps(queues);
+}
+
 void ui_check_buttons(int queues[N_QUEUES][N_FLOORS]){
 	
 	int button;
 	int floor;
     
-	for(button  = 0; button<N_BUTTONS; button++){
+	for(button  = 0; button<N_QUEUES; button++){
         for(floor = 0; floor<N_FLOORS; floor++){
             // Skip non-existing buttons
-            if((floor == 0 && button == BUTTON_CALL_DOWN) 
-                || (floor == 3 && button == BUTTON_CALL_UP)) 
+            
+			if((floor == 0 && button == BUTTON_CALL_DOWN) || (floor == 3 && button == BUTTON_CALL_UP)) 
                 continue;
+
             else if(ui_get_button_signal(button, floor))
             {
                 queues[button][floor] = 1; //TRUE;
             }
-            // If button is now released, register order !check this one
-            /*else if(queues[button][floor] == 1 TRUE)
-            {
-                queues[button][floor] = 0; //FALSE;
-                //add_to_queues(button,floor,1)
-            }*/
         }
     }
 
-}
-
-void ui_button_signals(int queues[N_QUEUES][N_FLOORS])
-{
-	ui_check_buttons(queues);
-	ui_set_lamps(queues);
 }
 
 void ui_set_lamps(int queues[N_QUEUES][N_FLOORS]){
@@ -73,8 +65,6 @@ void ui_set_lamps(int queues[N_QUEUES][N_FLOORS]){
 	}
 }
  
-//maybe let the queue arrays in queues handle button lamps?
-//to decrease dependancy
 void ui_set_button_lamp(int button, int floor, int value)
 {
 	// assert crashes the program deliberately if it's condition does not hold,
@@ -116,13 +106,23 @@ void ui_set_door_open_lamp(int value)
         io_clear_bit(DOOR_OPEN);
 }
 
-//elev_get_stop_signal=value
-void ui_set_stop_lamp(int value)
+
+int ui_get_stop_signal(void)
 {
-    if (value)
+    return io_read_bit(STOP);
+}
+
+void ui_set_stop_lamp()
+{
+    if (ui_get_stop_signal())
+	{
         io_set_bit(LIGHT_STOP);
-    else
+	}
+
+	else
+	{
         io_clear_bit(LIGHT_STOP);
+	}
 }
 
 void ui_set_floor_indicator(int floor)
@@ -143,24 +143,25 @@ void ui_set_floor_indicator(int floor)
         io_clear_bit(FLOOR_IND2);
 }
 
-//own added function reads FLOOR_IND1 and FLOOR_IND2 and returns the floor number which the elevator was at. 
-//returns previous floor from 0 to 3
+/**
+This funcion reads the floor indicator from I/O and returns its
+floor value as an integerer. Returns: 0..3
+*/
 int ui_get_floor_indicator(void)
 {
-    //int bit1 =io_read_bit(FLOOR_IND1);
-    //int bit2 =io_read_bit(FLOOR_IND2);
 
-    if 	(io_read_bit(FLOOR_IND1)==0 && io_read_bit(FLOOR_IND2)==0)
+    if(io_read_bit(FLOOR_IND1) == 0 && io_read_bit(FLOOR_IND2) == 0)
         return 0;
     if(io_read_bit(FLOOR_IND1) == 0 && io_read_bit(FLOOR_IND2) == 1)
 		return 1;
 	if(io_read_bit(FLOOR_IND1) == 1 && io_read_bit(FLOOR_IND2) == 0)
         return 2;
     if(io_read_bit(FLOOR_IND1) == 1 && io_read_bit(FLOOR_IND2) == 1)
-        return 3;   // else
-    return -1; //for debugging purposes
-}
+        return 3;
 
+    return 0;
+
+}
 
 int ui_init(void)
 {

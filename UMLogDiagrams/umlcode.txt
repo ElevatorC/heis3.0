@@ -1,9 +1,16 @@
-[Elevator|bool get_stop_signal();bool set_obstruction_signal();int get_floor_sensor();- int set_motor_speed();]
-[Queues|int add_to_queue(up/down/command);int remove_from_queue((up/down/command);bool reachedFloor();int set_button_lamp(button_matrix));]
-[User Interface|int get_button_signal(button_matrix);bool set_door_lamp();]
-[Elevator]<-->[Queues]
-[Elevator]<-->[User Interface]
-[User Interface]<-->[Queues]
-[User Interface]-|>[main|int state;]
-[Queues]-|>[main|int state;]
-[Elevator]-|>[main|int state;]
+[Elevator|int elev_init(void); int elev_get_floor_sensor_signal(void); int elev_get_obstruction_signal(void);void elev_set_speed(int speed);
+]
+[Queues|int queue_init(void);int queue_from_and_down_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType, int currenFloor);
+int queue_from_and_up_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType, int currenFloor);void queue_clear_all_orders(int queues[N_QUEUES][N_FLOORS]);int queue_has_orders(int queues[N_QUEUES][N_FLOORS]);
+enum queue_t]
+[IO|int io_init(); void io_set_bit(int channel); int io_read_bit(int channel); void io_clear_bit(int channel); void io_write_analog(int channel, int value); int io_read_analog(int channel);]
+[User Interface|int ui_get_button_signal(int button, int floor);
+enum ui_button_type_t;void ui_check_buttons(int queues[N_QUEUES][N_FLOORS]);void ui_button_signals(int queues[N_QUEUES][N_FLOORS]);
+void ui_set_lamps(int queues[N_QUEUES][N_FLOORS]);int ui_get_stop_signal(void);void ui_set_door_open_lamp(int value);void ui_set_stop_lamp(int value);void ui_set_floor_indicator(int floor);int ui_get_floor_indicator(void);void ui_set_button_lamp(int button, int floor, int value);int ui_init(void);]
+[Elevator Logic(sm_macro)|-int checkTimer(int seconds);void -startTimer();-static time_t timer;enum state;int sm_stop_signal();int sm_check_floor_sensor_signal(void);void sm_check_button_signals(int queues[N_QUEUES][N_FLOORS]);void sm_floor_indicator(int floor);int sm_init();sm_state_t sm_move_down(int queues[N_QUEUES][N_FLOORS]);
+sm_state_t sm_idle(int queues[N_QUEUES][N_FLOORS], int previousState);sm_state_t sm_stop(int queues[N_QUEUES][N_FLOORS]);sm_state_t sm_open_door(int queues[N_QUEUES][N_FLOORS], int previousState);sm_state_t sm_undefined(void);]
+[Elevator]<--[Elevator Logic(sm_macro)]
+[User Interface]<--[Elevator Logic(sm_macro)]
+[User Interface]-->[IO]
+[Queues]<--[Elevator Logic(sm_macro)]
+[Elevator Logic(sm_macro)]-->main

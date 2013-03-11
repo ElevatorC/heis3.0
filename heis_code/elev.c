@@ -5,11 +5,12 @@
 
 //Edited by Sigvart M. Hovland and Olav Kallerud
 
+
+
 #include "channels.h"
 #include "elev.h"
 #include "io.h"
 
-#include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -19,7 +20,7 @@ void elev_set_speed(int speed)
     // In order to sharply stop the elevator, the direction bit is toggled
     // before setting speed to zero.
     static int last_speed = 0;
-
+    
     // If to start (speed > 0)
     if (speed > 0)
         io_clear_bit(MOTORDIR);
@@ -43,11 +44,6 @@ int elev_get_obstruction_signal(void)
     return io_read_bit(OBSTRUCTION);
 }
 
-int elev_get_stop_signal(void)
-{
-    return io_read_bit(STOP);
-}
-
 int elev_get_floor_sensor_signal(void)
 {
     if (io_read_bit(SENSOR1))
@@ -62,13 +58,8 @@ int elev_get_floor_sensor_signal(void)
         return -1;
 }
 
-int elev_get_motor_dir(void){
-	return io_read_bit(MOTORDIR);
-}
-
 int elev_init(void)
 {
-
     // Init hardware
     if (!io_init())
         return 0;
@@ -76,20 +67,6 @@ int elev_init(void)
     return 1;
 }
 
-// debug function
-void print_queues(int queues[N_QUEUES][N_FLOORS]){
-	int queue;
-	int floor;
-
-	for(queue=0; queue < N_QUEUES; queue++){
-		printf("%d : [ ",queue);
-
-		for(floor = 0; floor < N_FLOORS; floor++){
-			printf("%d ",queues[queue][floor]);
-		}
-		printf("]\n");
-	}
-}
 
 
 

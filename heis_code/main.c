@@ -1,82 +1,77 @@
-#include <stdio.h>
-#include "elev.h"
-#include "ui.h"
 #include "sm_macro.h"
-#include "io.h"
-#include "channels.h"
+#include <stdio.h>
 
-// legges i elev.h!!!!!!!!!!!!!!!!
+//initialize queue system
 static int queues[N_QUEUES][N_FLOORS] = {{0}};
+
+//initializes state system
+static int state = STATE_UNDEFINED;
+static int previousState = 0;
+
+//initialize floor indicator variable
+static int floor = 0;
 
 int main()
 {
-	//initialize states
-	int state = STATE_UNDEF;
-	int previousState = 0;
-	int floor = 0;
-    // Initialize hardware
-    if (!elev_init())
-    {
-        printf(__FILE__ ": Unable to initialize elevator hardware\n");
-        return 1;
-    }
-
-    if (!ui_init())
-    {
-        printf(__FILE__ ": Unable to initialize elevator user interface\n");
-        return 1;
-    }
+    
+	//Initialize Statemachine macros
+	if(!sm_init()){
+		printf(__FILE__ ": Unable to initialize Statemachine Logic\n");
+	}
 
     while (1) {
-		if(elev_get_floor_sensor_signal()>=0)
-		{
-   		floor = elev_get_floor_sensor_signal();
-		}
-        //sette dette ut til SM_MACRO!!!!!!!!!!!!!!!!!!!!!!!
-        //se kommunikasjonsdiagram
-		ui_button_signals(queues);
-		ui_set_floor_indicator(floor);
 
-        if(elev_get_stop_signal())
+		//Set the floor variable to the last floor seen by the sensors.
+   		floor = sm_check_floor_sensor_signal();
+
+		//Checks for buttons signals from panel.
+		sm_check_button_signals(queues);
+
+		//Make UI light up the floor indicator lamp at the correct last seen floor.
+		sm_floor_indicator(floor);
+        
+		//Stops the elevator if the stop button is pressed during transition of states
+        if(sm_stop_signal())
         {
             state = STATE_STOP;
         }
-
+        
         // STATEMACHINE
         switch(state)
         {
-
             case STATE_IDLE:
 				state = sm_idle(queues,previousState);
 				previousState = STATE_IDLE;
 				break;
 
-           case STATE_UP:
-				state = sm_up(queues);
-				previousState = STATE_UP;
+            case STATE_MOVE_UP:	        
+				state = sm_move_up(queues);
+				previousState = STATE_MOVE_UP;
 				break;
 
-            case STATE_DOWN:
-			    state = sm_down(queues);
-				previousState = STATE_DOWN;
-                break;
+            case STATE_MOVE_DOWN:
+				state = sm_move_down(queues);
+				previousState = STATE_MOVE_DOWN;
+				break;
 
-            case STATE_DOOR_OPEN:
-  				state =sm_door_open(queues,previousState);
-                previousState = STATE_DOOR_OPEN;
+            case STATE_OPEN_DOOR:
+                state =sm_open_door(queues,previousState);
+                previousState = STATE_OPEN_DOOR;
 				break;
 
             case STATE_STOP:
                 state = sm_stop(queues);
 				break;
 
-            case STATE_UNDEF:
-            	//If the elevator do not are on a floor, move until it gets to the floor underneath
-				state = sm_undef();
+            case STATE_UNDEFINED:
+				//If the elevator do not have a defined state, move until it gets to the bottom
+				//of the elevator shaft or sens a floor sensor underneath current position.
+				state = sm_undefined();			
 				break;
-		}
-	//End While
-	}
+		}//End Switch
+    }//End While
+
     return 0;
+
 }
 

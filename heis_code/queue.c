@@ -2,29 +2,15 @@
 	This module handels the queue system
 */
 
-#include "ui.h"
-#include "elev.h"
-#include "io.h"
-#include "channels.h"
 #include "queue.h"
+#include<stdio.h>
 
-#include<assert.h>
-
-
-
-int queue_floor_has_orders(int queues[N_QUEUES][N_FLOORS], queue_t queueType, int floor)
+/*
+Checks if all the queue items from current floor and up in the selected queue type is empty
+returns 1(true) if it is empty. Returns 0(false) 
+*/
+int queue_from_and_up_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType, int currentFloor)
 {
-    assert(floor != -1);
-    return queues[queueType][floor];
-}
-
-//general type, can be changed too 
-void queue_change_queue(int queues[N_QUEUES][N_FLOORS], queue_t queueType, int floor,int value){
-	queues[queueType][floor] = value;
-}
-
-//ser etter elementer over current
-int queue_up_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType, int currentFloor){
 	int floor;
 	
 	for(floor=currentFloor; floor < N_FLOORS; floor++){ 
@@ -35,10 +21,12 @@ int queue_up_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType, int current
 	return 1; //TRUE
 
 }
-//ser etter elementer under current
-int queue_down_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType, int currentFloor){
+
+int queue_from_and_down_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType, int currentFloor){
 	int floor;
-	for(floor=currentFloor; floor >= 0; --floor){ // kanskje post
+
+	for(floor=currentFloor; floor >= 0; --floor)
+	{ 
 			if(queues[queueType][floor] == 1)
 			return 0; //FALSE
 	}
@@ -46,7 +34,9 @@ int queue_down_empty(int queues[N_QUEUES][N_FLOORS],queue_t queueType, int curre
 	return 1; //TRUE
 
 }
-void queue_clear(int queues[N_QUEUES][N_FLOORS]){
+
+
+void queue_clear_all_orders(int queues[N_QUEUES][N_FLOORS]){
 	int queue;
 	int floor;
 
@@ -56,6 +46,7 @@ void queue_clear(int queues[N_QUEUES][N_FLOORS]){
 		}
 	}
 }
+
 
 int queue_has_orders(int queues[N_QUEUES][N_FLOORS]){
 	int queue;
@@ -71,18 +62,17 @@ int queue_has_orders(int queues[N_QUEUES][N_FLOORS]){
 
 }
 
-int queue_queueType_order(int queues[N_QUEUES][N_FLOORS], int currentFloor, int previousState,int queueType){	
-	int floor;	
-	for(floor = currentFloor; floor < N_FLOORS; floor++){
-				if(queues[queueType][floor]) {
-					return STATE_UP;			
-	}
-	}
-	for(floor = currentFloor; floor >= 0; floor--){
-				if(queues[queueType][floor]) {
-					return STATE_DOWN;			
-	}
-	}
-	return -1;
+//debug function
+void queue_print_queues(int queues[N_QUEUES][N_FLOORS]){
+	int queue;
+	int floor;
 	
+	for(queue=0; queue < N_QUEUES; queue++){
+		printf("%d : [ ",queue);
+
+		for(floor = 0; floor < N_FLOORS; floor++){
+			printf("%d ",queues[queue][floor]);
+		}
+		printf("]\n");
+	}
 }
