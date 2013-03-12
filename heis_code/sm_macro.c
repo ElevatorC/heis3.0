@@ -98,8 +98,15 @@ sm_state_t sm_move_up(int queues[N_QUEUES][N_FLOORS]){
 
 	//Checks if there are orders in the up- or (command- and up-) queue at current floor.
 	if(queues[QUEUE_UP][currentFloor] ||(queues[QUEUE_COMMAND][currentFloor] && queues[QUEUE_UP][currentFloor]))
-	{
-		return STATE_OPEN_DOOR;	
+	{	
+		if(elev_get_floor_sensor_signal() != -1) //Checks if it is at a floor.
+		{
+		  return STATE_OPEN_DOOR;
+		}
+		else 
+		{
+		  return STATE_MOVE_UP;
+		}
 	}
 
 	//Checks if the command queue has an order at current floor and that the elevator is at an actual floor.
@@ -122,7 +129,6 @@ sm_state_t sm_move_up(int queues[N_QUEUES][N_FLOORS]){
 			{
 				return STATE_MOVE_UP;
 			}
-			
 			else
 			{
 				return STATE_OPEN_DOOR;
@@ -132,7 +138,14 @@ sm_state_t sm_move_up(int queues[N_QUEUES][N_FLOORS]){
 	//Checks if the down queue has order on current floor and there is no orders over the current floor in up queue.
 	else if(queues[QUEUE_DOWN][currentFloor] && queue_from_and_up_empty(queues, QUEUE_UP, currentFloor))
 	{
-		return STATE_OPEN_DOOR;	
+		if(elev_get_floor_sensor_signal() != -1) //Checks if it is at a floor.
+		{
+		  return STATE_OPEN_DOOR;
+		}
+		else 
+		{
+		  return STATE_MOVE_UP;
+		}
 	}
 	
 	//Checks if it is order over current floor in up or down queue.
@@ -160,16 +173,23 @@ sm_state_t sm_move_down(int queues[N_QUEUES][N_FLOORS]){
 	//Sets currentFloor to the current floor it is at.
 	if(elev_get_floor_sensor_signal()>=0)
 	{
-     currentFloor = elev_get_floor_sensor_signal();
+	  currentFloor = elev_get_floor_sensor_signal();
 	}
 	
 	//Sets the motor speed to 100 downwards.
 	elev_set_speed(-100);
 
 	//Checks if there are orders in the down- or (command- and down-) queue at current floor.
-	if(queues[QUEUE_DOWN][currentFloor]||((queues[QUEUE_COMMAND][currentFloor]) && queues[QUEUE_DOWN][currentFloor]))
+	if((queues[QUEUE_DOWN][currentFloor]||((queues[QUEUE_COMMAND][currentFloor]) && queues[QUEUE_DOWN][currentFloor])))
 	{
-		return STATE_OPEN_DOOR;	
+		if(elev_get_floor_sensor_signal() != -1) //Checks if it is at a floor.
+		{
+		  return STATE_OPEN_DOOR;
+		}
+		else
+		{
+		  return STATE_MOVE_DOWN;
+		}
 	}
 
 	//Checks if the command queue has an order at current floor and that the elevator is at an actual floor.
@@ -177,6 +197,7 @@ sm_state_t sm_move_down(int queues[N_QUEUES][N_FLOORS]){
 	{
 		return STATE_OPEN_DOOR;
 	}
+
 	//Checks if the down queue has any orders bellow current floor.
 	else if(!queue_from_and_down_empty(queues, QUEUE_COMMAND, currentFloor))
 	{
@@ -186,18 +207,29 @@ sm_state_t sm_move_down(int queues[N_QUEUES][N_FLOORS]){
 	//Checks if the bottom floor is ordered in the up queue and the down queue does not have orders bellow the current floor.
 	else if(queues[QUEUE_UP][0] == 1 && queue_from_and_down_empty(queues, QUEUE_DOWN, currentFloor))
 	{		
-			if(currentFloor != 0)
-			{
-				return STATE_MOVE_DOWN;
-			}
-		
-		return STATE_OPEN_DOOR;
+
+		if(currentFloor != 0)
+		{
+			return STATE_MOVE_DOWN;
+		}
+		else
+		{
+		  return STATE_MOVE_DOWN;
+		}
+
 	}
 	
 	//Checks if the up queue has order on current floor and there is no orders over the current floor in the down queue.
 	else if(queues[QUEUE_UP][currentFloor] && queue_from_and_down_empty(queues, QUEUE_DOWN, currentFloor))
 	{
-		return STATE_OPEN_DOOR;	
+		if(elev_get_floor_sensor_signal() != -1) //Checks if it is at a floor.
+		{
+		  return STATE_OPEN_DOOR;
+		}
+		else
+		{
+		  return STATE_MOVE_DOWN;
+		}
 	}
 
 	//Checks if it is order bellow current floor in up or down queue.
@@ -295,7 +327,7 @@ sm_state_t sm_undefined(void){
 sm_state_t sm_open_door(int queues[N_QUEUES][N_FLOORS],sm_state_t previousState){
 
 	elev_set_speed(0); //Stops the elevator
-
+	
 	int currentFloor = elev_get_floor_sensor_signal(); //Gets the current floor the elevator.
 
 	// If the elevator has an obstruction between floors stop the elevator
@@ -399,7 +431,7 @@ sm_state_t sm_open_door(int queues[N_QUEUES][N_FLOORS],sm_state_t previousState)
 	}
 	
 	//Returns to previous state
-	else if(previousState==STATE_MOVE_UP)
+	else if(previousState == STATE_MOVE_UP)
 	{
 			return STATE_MOVE_UP;
 	}
@@ -428,6 +460,6 @@ int sm_init(){
         return 1;
     }
 
-   return 0;
+   return 1;
 
 }
