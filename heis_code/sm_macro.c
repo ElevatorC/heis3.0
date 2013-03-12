@@ -297,11 +297,15 @@ sm_state_t sm_stop(int queues[N_QUEUES][N_FLOORS]) {
 	 
     elev_set_speed(0); //Stops the elevator
     ui_set_stop_lamp(1); //Light the stop light
-   
+	if(elev_get_floor_sensor_signal() >= 0)
+	{
+		ui_set_door_open_lamp(1);
+	}
 	//Checks if any queues has order if not return stop state.
-	if(queue_has_orders(queues) && !ui_get_stop_signal())
+	else if(queue_has_orders(queues) && !ui_get_stop_signal())
     {
     	ui_set_stop_lamp(0);//Turns of the stop light
+		ui_set_door_open_lamp(0);
         return STATE_UNDEFINED;
     }
 	
@@ -345,8 +349,13 @@ sm_state_t sm_open_door(int queues[N_QUEUES][N_FLOORS],sm_state_t previousState)
 	
 	startTimer();
 	while(checkTimer(3) != 1){
+		
+		if(elev_get_floor_sensor_signal() == -1)
+		{
+			ui_set_door_open_lamp(0);
+		}
 
-		if(ui_get_stop_signal()) //Checks stop button for input while the door is open.
+		else if(ui_get_stop_signal()) //Checks stop button for input while the door is open.
 		{
             return STATE_STOP;
 		}
