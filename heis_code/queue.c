@@ -48,14 +48,13 @@ void queue_clear_all_orders(int queues[N_QUEUES][N_FLOORS]){
 }
 
 
-int queue_has_orders(int queues[N_QUEUES][N_FLOORS]){
-	int queue;
+int queue_command_has_orders(int queues[N_QUEUES][N_FLOORS]){
 	int floor;
 
-	for(queue=0; queue < N_QUEUES; queue++){
-		for(floor = 0; floor < N_FLOORS; floor++){
-			if(queues[queue][floor]==1)
-				return 1; //TRUE
+	for(floor = 0; floor < N_FLOORS; floor++){
+		if(queues[QUEUE_COMMAND][floor]==1)
+		{
+			return 1; //TRUE
 		}
 	}
 	return 0; //false

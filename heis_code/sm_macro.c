@@ -297,8 +297,9 @@ sm_state_t sm_stop(int queues[N_QUEUES][N_FLOORS]) {
 	 
     elev_set_speed(0); //Stops the elevator
     ui_set_stop_lamp(1); //Light the stop light
-	//Checks if any queues has order if not return stop state.
-	if(queue_has_orders(queues) && !ui_get_stop_signal())
+
+	//Checks if command queues has order if not return stop state.
+	if(queue_command_has_orders(queues) && !ui_get_stop_signal())
     {
     	ui_set_stop_lamp(0);//Turns of the stop light
 		ui_set_door_open_lamp(0);

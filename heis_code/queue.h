@@ -15,7 +15,7 @@ typedef enum queue_tag_type
 Checks if any queues has an ordered element in it.
 returns 1(TRUE) if it has orders if not it returns 0(FALSE)
 */
-int queue_has_orders(int queues[N_QUEUES][N_FLOORS]);
+int queue_command_has_orders(int queues[N_QUEUES][N_FLOORS]);
 
 
 /**
