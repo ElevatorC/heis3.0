@@ -352,7 +352,7 @@ sm_state_t sm_open_door(int queues[N_QUEUES][N_FLOORS],sm_state_t previousState)
 		
 		if(elev_get_floor_sensor_signal() == -1)
 		{
-			ui_set_door_open_lamp(0);
+			break;
 		}
 
 		else if(ui_get_stop_signal()) //Checks stop button for input while the door is open.
