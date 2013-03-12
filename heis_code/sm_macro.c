@@ -279,7 +279,6 @@ sm_state_t sm_stop(int queues[N_QUEUES][N_FLOORS]) {
 	return STATE_STOP;
 	}
 	
-
 }
 
 sm_state_t sm_undefined(void){
@@ -293,11 +292,22 @@ sm_state_t sm_undefined(void){
 	return STATE_IDLE;
 }
 
-sm_state_t sm_open_door(int queues[N_QUEUES][N_FLOORS], int previousState){
+sm_state_t sm_open_door(int queues[N_QUEUES][N_FLOORS],sm_state_t previousState){
 
 	elev_set_speed(0); //Stops the elevator
 
-	int currentFloor = elev_get_floor_sensor_signal(); //gets the current floor the 
+	int currentFloor = elev_get_floor_sensor_signal(); //Gets the current floor the elevator.
+
+	// If the elevator has an obstruction between floors stop the elevator
+	while(elev_get_obstruction_signal() && currentFloor == -1)
+	{
+		return previousState;
+	}
+	
+	if(currentFloor == -1)
+	{
+		return previousState;
+	}
 
 	ui_set_door_open_lamp(1); //Open doors
 	
@@ -400,7 +410,6 @@ sm_state_t sm_open_door(int queues[N_QUEUES][N_FLOORS], int previousState){
 	}
 
 }
-
 
 // Initialize statemachine
 int sm_init(){

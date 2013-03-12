@@ -6,7 +6,7 @@ static int queues[N_QUEUES][N_FLOORS] = {{0}};
 
 //initializes state system
 static int state = STATE_UNDEFINED;
-static int previousState = 0;
+static sm_state_t previousState = STATE_UNDEFINED;
 
 //initialize floor indicator variable
 static int floor = 0;

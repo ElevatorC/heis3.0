@@ -20,12 +20,14 @@ static const int lamp_channel_matrix[N_FLOORS][N_BUTTONS] =
 static const int button_channel_matrix[N_FLOORS][N_BUTTONS] =
   {SCM_SET(1), SCM_SET(2), SCM_SET(3), SCM_SET(4)};
 
+//Checks button signals and set lamps.
 void ui_button_signals(int queues[N_QUEUES][N_FLOORS])
 {
 	ui_check_buttons(queues);
 	ui_set_lamps(queues);
 }
 
+//Checks if there are any button pressed on the panel
 void ui_check_buttons(int queues[N_QUEUES][N_FLOORS]){
 	
 	int button;
@@ -33,11 +35,11 @@ void ui_check_buttons(int queues[N_QUEUES][N_FLOORS]){
     
 	for(button  = 0; button<N_QUEUES; button++){
         for(floor = 0; floor<N_FLOORS; floor++){
-            // Skip non-existing buttons
-            
-			if((floor == 0 && button == BUTTON_CALL_DOWN) || (floor == 3 && button == BUTTON_CALL_UP)) 
+            // Skips non-existing buttons
+			if((floor == 0 && button == BUTTON_CALL_DOWN) || (floor == 3 && button == BUTTON_CALL_UP))
+			{
                 continue;
-
+			}
             else if(ui_get_button_signal(button, floor))
             {
                 queues[button][floor] = 1; //TRUE;
@@ -67,13 +69,8 @@ void ui_set_lamps(int queues[N_QUEUES][N_FLOORS]){
  
 void ui_set_button_lamp(int button, int floor, int value)
 {
-	// assert crashes the program deliberately if it's condition does not hold,
-	// and prints an informative error message. Useful for debugging.
     assert(floor >= 0);
     assert(floor < N_FLOORS);
-  //  assert(!(button == BUTTON_CALL_UP && floor == N_FLOORS-1));
-  //  assert(!(button == BUTTON_CALL_DOWN && floor == 0));
-  //  assert(button == BUTTON_CALL_UP || button == BUTTON_CALL_DOWN || button == BUTTON_COMMAND);
 
     if (value == 1)
         io_set_bit(lamp_channel_matrix[floor][button]);
@@ -106,15 +103,14 @@ void ui_set_door_open_lamp(int value)
         io_clear_bit(DOOR_OPEN);
 }
 
-
 int ui_get_stop_signal(void)
 {
     return io_read_bit(STOP);
 }
 
-void ui_set_stop_lamp()
+void ui_set_stop_lamp(int value)
 {
-    if (ui_get_stop_signal())
+    if (value)
 	{
         io_set_bit(LIGHT_STOP);
 	}

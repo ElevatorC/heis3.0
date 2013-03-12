@@ -68,7 +68,7 @@ sm_state_t sm_stop(int queues[N_QUEUES][N_FLOORS]);
 /**
 Contains the idle state logic and returns open door, move up, move down or stop.
 */
-sm_state_t sm_open_door(int queues[N_QUEUES][N_FLOORS], int previousState);
+sm_state_t sm_open_door(int queues[N_QUEUES][N_FLOORS], sm_state_t previousState);
 
 /**
 Contains the undefined state logic and returns undefined or idle.
