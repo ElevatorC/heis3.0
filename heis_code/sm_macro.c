@@ -214,7 +214,7 @@ sm_state_t sm_move_down(int queues[N_QUEUES][N_FLOORS]){
 		}
 		else
 		{
-		  return STATE_MOVE_DOWN;
+		  return STATE_OPEN_DOOR;
 		}
 
 	}
