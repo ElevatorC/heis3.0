@@ -24,3 +24,9 @@ Name Explenations:
 
 Class syntax:
 * (filename)_function_name();
+
+Spesification requirement not achived in FAT test:
+The elevator doesn't know which too floors it is in
+between. Solution: sm_stop takes in a previousState parameter
+then it uses ui_get_floor_indicator and previousState to find out
+which floors it is between.
