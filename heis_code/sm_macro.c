@@ -318,12 +318,13 @@ sm_state_t sm_stop(int queues[N_QUEUES][N_FLOORS]) {
 	
 }
 
-sm_state_t sm_undefined(void){
+sm_state_t sm_undefined(int queues[N_QUEUES][N_FLOORS]){
 
 	ui_set_door_open_lamp(0); //Closes the door after stop state
 
 	if(elev_get_floor_sensor_signal()==-1){
 		elev_set_speed(-100);
+		queue_clear_all_orders(queues);
 		return STATE_UNDEFINED;	
 	}
 	return STATE_IDLE;

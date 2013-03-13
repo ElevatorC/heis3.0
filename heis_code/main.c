@@ -66,7 +66,7 @@ int main()
             case STATE_UNDEFINED:
 				//If the elevator do not have a defined state, move until it gets to the bottom
 				//of the elevator shaft or sens a floor sensor underneath current position.
-				state = sm_undefined();			
+				state = sm_undefined(queues);			
 				break;
 		}//End Switch
     }//End While

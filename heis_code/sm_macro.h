@@ -73,7 +73,7 @@ sm_state_t sm_open_door(int queues[N_QUEUES][N_FLOORS], sm_state_t previousState
 /**
 Contains the undefined state logic and returns undefined or idle.
 */
-sm_state_t sm_undefined(void);
+sm_state_t sm_undefined(int queues[N_QUEUES][N_FLOORS]);
 
 
 #endif
