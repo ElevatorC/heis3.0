@@ -5,7 +5,7 @@
 static int queues[N_QUEUES][N_FLOORS] = {{0}};
 
 //initializes state system
-static int state = STATE_UNDEFINED;
+static sm_state_t state = STATE_UNDEFINED;
 static sm_state_t previousState = STATE_UNDEFINED;
 
 //initialize floor indicator variable
@@ -25,7 +25,7 @@ int main()
    		floor = sm_check_floor_sensor_signal();
 
 		//Checks for buttons signals from panel.
-		sm_check_button_signals(queues);
+		sm_check_order_button_signals(queues);
 
 		//Make UI light up the floor indicator lamp at the correct last seen floor.
 		sm_floor_indicator(floor);

@@ -24,7 +24,7 @@ static const int button_channel_matrix[N_FLOORS][N_BUTTONS] =
 void ui_button_signals(int queues[N_QUEUES][N_FLOORS])
 {
 	ui_check_buttons(queues);
-	ui_set_lamps(queues);
+	ui_set_order_buttons_lamp(queues);
 }
 
 //Checks if there are any button pressed on the panel
@@ -49,7 +49,7 @@ void ui_check_buttons(int queues[N_QUEUES][N_FLOORS]){
 
 }
 
-void ui_set_lamps(int queues[N_QUEUES][N_FLOORS]){
+void ui_set_order_buttons_lamp(int queues[N_QUEUES][N_FLOORS]){
 	int queue;
 	int floor;
 	

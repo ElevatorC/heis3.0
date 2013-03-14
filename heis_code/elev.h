@@ -5,12 +5,6 @@
 #ifndef __INCLUDE_DRIVER_H__
 #define __INCLUDE_DRIVER_H__
 
-
-// Number of floors
-#define N_FLOORS 4
-#define N_QUEUES 3 
-
-
 /**
   Sets the speed of the elevator. 
   @param speed New speed of elevator. Positive values denote upward movement

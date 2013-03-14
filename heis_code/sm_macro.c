@@ -41,7 +41,7 @@ int sm_check_floor_sensor_signal(void){
 }
 
 //Makes ui check for button input from elevator panel.
-void sm_check_button_signals(int queues[N_QUEUES][N_FLOORS])
+void sm_check_order_button_signals(int queues[N_QUEUES][N_FLOORS])
 {
 	ui_button_signals(queues);
 }
@@ -245,7 +245,7 @@ sm_state_t sm_move_down(int queues[N_QUEUES][N_FLOORS]){
 	}
 }
 
-sm_state_t sm_idle(int queues[N_QUEUES][N_FLOORS], int previousState) {
+sm_state_t sm_idle(int queues[N_QUEUES][N_FLOORS], sm_state_t previousState) {
 	
 	//Stops the elevator,
 	elev_set_speed(0);

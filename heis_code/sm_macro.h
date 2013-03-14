@@ -30,7 +30,7 @@ int sm_check_floor_sensor_signal(void);
 Checks for button press and sets the light on appropriate
 button and add elements to queue.
 */
-void sm_check_button_signals(int queues[N_QUEUES][N_FLOORS]);
+void sm_check_order_button_signals(int queues[N_QUEUES][N_FLOORS]);
 
 /**
 Sets the correct floor indicator light.
@@ -56,7 +56,7 @@ sm_state_t sm_move_down(int queues[N_QUEUES][N_FLOORS]);
 /**
 Contains the idle state logic and returns open door, idle or move down.
 */
-sm_state_t sm_idle(int queues[N_QUEUES][N_FLOORS], int previousState);
+sm_state_t sm_idle(int queues[N_QUEUES][N_FLOORS], sm_state_t previousState);
 
 
 /**

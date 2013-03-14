@@ -34,7 +34,7 @@ void ui_check_buttons(int queues[N_QUEUES][N_FLOORS]);
 void ui_button_signals(int queues[N_QUEUES][N_FLOORS]);
 
 //set lights
-void ui_set_lamps(int queues[N_QUEUES][N_FLOORS]);
+void ui_set_order_buttons_lamp(int queues[N_QUEUES][N_FLOORS]);
 
 /**
   Get signal from stop button.
